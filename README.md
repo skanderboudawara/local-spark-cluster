@@ -4,13 +4,13 @@
 
 This repository contains a Docker-based setup for a Spark cluster to run Python scripts.
 
-It offers a simple containerized Spark environment that allows users to run small Spark scripts locally for testing and verification purposes.
+It offers a containerized Spark environment that allows users to run small Spark scripts locally for testing and verification purposes.
 
 
 ## Repository Structure
 
    ```bash
-   Spark-Cluster/
+   spark-cluster/
     ├── docker-compose.yml   # Docker Compose configuration
     ├── src/                 # Source code for Python scripts
     │ ├── init.py 
@@ -38,142 +38,149 @@ It offers a simple containerized Spark environment that allows users to run smal
    pip install -r requirements.txt
    ```
 
-### Launching the Spark Cluster
+### **Launching the Spark Cluster**
 
-1. **Navigate to the root directory of the repository**:
-   ```bash
-   cd path/to/your_local_repository
-   ```
+#### 1. **Navigate to the root directory of the repository**:
 
-   ---
+```bash
+cd path/to/your_local_repository
+```
 
-   *⚠️ Make sure to replace `path/to/your_local_repository` with your local repository path*
+---
 
-2. **Start the Docker containers using Docker Compose:**
-   ```bash
-   docker compose up -d
-   ```
+*⚠️ Make sure to replace `path/to/your_local_repository` with your local repository path*
 
-3. **Check the status of your containers:**
-   ```bash
-   docker compose ps
-   ```
+#### 2. **Start the Docker containers using Docker Compose:**
 
-   ---
+```bash
+docker compose up -d
+```
 
-    ✅If everything is working correctly, you should see the list of your running containers, showing the name, state (e.g., Up), and ports for each service.
-    
-    *For example:*
+#### 3. **Check the status of your containers:**
+```bash
+docker compose ps
+```
 
-    ```bash
-    Name                              Command               State           Ports                  
-    -----------------------------------------------------------------------------------------------
-    spark-cluster-spark-master_1      /opt/bitnami/scripts/  Up              0.0.0.0:8080->8080/tcp
-    spark-cluster-spark-worker-1      /opt/bitnami/scripts/  Up                                    
-    ```
+---
 
-    This means that both the Spark master and worker nodes are running as expected and are        accessible on their respective ports.
+✅If everything is working correctly, you should see the list of your running containers, showing the name, state (e.g., Up), and ports for each service.
 
-    ---
+*For example:*
 
-    ❌ If there are any issues, the `State` column might show `Exited` or `Restarting`, indicating that one or more containers have failed to start or are repeatedly restarting.
-    
-    *For example:*
+```bash
+Name                              Command               State           Ports                  
+-----------------------------------------------------------------------------------------------
+spark-cluster-spark-master_1      /opt/bitnami/scripts/  Up              0.0.0.0:8080->8080/tcp
+spark-cluster-spark-worker-1      /opt/bitnami/scripts/  Up                                    
+```
 
-    ```bash
-    Name                              Command               State           Ports                  
-    -----------------------------------------------------------------------------------------------
-    spark-cluster-spark-master_1      /opt/bitnami/scripts/  Exited         0.0.0.0:8080->8080/tcp
-    spark-cluster-spark-worker-1      /opt/bitnami/scripts/  Up                                    
-    ```
+This means that both the Spark master and worker nodes are running as expected and are accessible on their respective ports.
 
-## Creating PySpark Scripts
+---
 
-You can create and run your own PySpark scripts by placing them in the [./src/scripts/](./src/scripts/) folder. To do so, follow the process outlined below.
+❌ If there are any issues, the `State` column might show `Exited` or `Restarting`, indicating that one or more containers have failed to start or are repeatedly restarting.
+
+*For example:*
+
+```bash
+Name                              Command               State           Ports                  
+-----------------------------------------------------------------------------------------------
+spark-cluster-spark-master_1      /opt/bitnami/scripts/  Exited         0.0.0.0:8080->8080/tcp
+spark-cluster-spark-worker-1      /opt/bitnami/scripts/  Up                                    
+```
+
+## **Creating PySpark Scripts**
+
+You can create and run your own PySpark scripts by placing them in the [./src/scripts/](./src/scripts/) folder.
+
+To do so, follow the process outlined below.
 
 
-1. **Importing the Spark Session:**
+#### 1. **Importing the Spark Session:**
 
-   To initialize a Spark session, import the `get_spark_session` function from the `spark_session` module:
+To initialize a Spark session, import the `get_spark_session` function from the `spark_session` module:
 
-   ```python
-   from spark_session import get_spark_session
+```python
+from spark_session import get_spark_session
 
-   # Get the spark session and specify a name for your spark application
-   spark_session = get_spark_session("YourSparkApplicationName")
-   ```
-    In the `get_spark_session` function, you need to provide a unique name for your Spark application. 
-    
-    This name will not only identify the application in the Spark UI but will also be used to define the input and output paths.
+# Get the spark session and specify a name for your spark application
+spark_session = get_spark_session("YourSparkApplicationName")
+```
+In the `get_spark_session` function, you need to provide a unique name for your Spark application. 
 
-3. **Input Data**
+This name will identify the application in the Spark UI and will also be used to define the input and output paths.
 
-   Place your input files in [./data/input/YourSparkApplicationName](./data/input)
+#### 3. **Input Data**
 
-   ---
+Place your input files in [./data/input/YourSparkApplicationName](./data/input)
 
-   *⚠️ Replace `YourSparkApplicationName` with the name you used when initializing the Spark session.*
+---
 
-   ---
-   
-   This ensures your input files to be correctly accessible for your application.
+*⚠️ Replace `YourSparkApplicationName` with the name you used when initializing the Spark session.*
 
-2. **Writing your Spark logic**
+---
 
-   After initializing the Spark session, you can write your Spark logic as needed, such as reading data, performing transformations, analyzing datasets etc...
+This ensures your input files to be correctly accessible for your application.
 
-3. **Writing output data**
+#### 2. **Writing your Spark logic**
 
-    To write your DataFrame output, use the `write_dataframe` function, which extends the functionality of the Spark DataFrame. 
+After initializing the Spark session, you can write your Spark logic as needed, such as reading data, performing transformations, analyzing datasets etc...
 
-    The output will be saved to [./data/output/YourSparkApplicationName](./data/input):
+#### 3. **Writing output data**
 
-    ---
+To write your DataFrame output, use the `write_dataframe` function, which extends the Spark DataFrame functionality. 
 
-    *⚠️ Replace `YourSparkApplicationName` with the name you used when initializing the Spark session.*
+The output will be saved to [./data/output/YourSparkApplicationName](./data/input):
 
-    ---
+---
 
-    You can write the output in fthe following format:
-    - `csv`
-    - `parquet`
-    - `json`
+*⚠️ Replace `YourSparkApplicationName` with the name you used when initializing the Spark session.*
 
-    Exemple:
-    ```python
-    # Example usage of write_dataframe function
-    df.write_dataframe(format="csv")
-    ```
+---
 
-5. **Script Template**
+You can write the output in fthe following format:
+- `csv`
+- `parquet`
+- `json`
 
-    If you're unsure how to structure your script, a template is available at [./src/scripts/script_template.py](./src/scripts/script_template.py).
-    
-    This template includes the basic setup for initializing a Spark session, processing data and writing an output dataset.
+ Exemple:
+ ```python
+ # Example usage of write_dataframe function
+ df.write_dataframe(format="csv")
+ ```
+
+#### 5. **Script Template**
+
+If you're unsure how to structure your script, a template is available at [./src/scripts/script_template.py](./src/scripts/script_template.py).
+
+This template includes the basic setup for initializing a Spark session, processing data and writing an output dataset.
 
 ## Executing Python Scripts
 
-   To run a Python script using spark-submit, follow these steps:
+To run a Python script using spark-submit, follow these steps:
 
-1. **Access the Spark Master Container:**
-   ```bash
-    docker exec -it spark-cluster-spark-master-1 /bin/bash
-   ```
+#### 1. **Access the Spark Master Container:**
 
-2. **Run your python script:**
+```bash
+ docker exec -it spark-cluster-spark-master-1 /bin/bash
+```
 
-   Use spark-submit to execute your script:
+#### 2. **Run your python script:**
 
-   ``` bash
-   spark-submit /opt/spark/src/scripts/script1.py
-   ```
-   ---
+Use `spark-submit` to execute your script:
 
-   *⚠️ Make sure to replace `script1.py` with the name of your script.*
+``` bash
+spark-submit /opt/spark/src/scripts/script1.py
+```
 
-   ---
+---
 
-   The scripts are located in the `/opt/spark/src/scripts/` directory within the container.
+*⚠️ Make sure to replace `script1.py` with the name of your script.*
+
+*Scripts are located in the `/opt/spark/src/scripts/` directory within the container*
+
+---
+
 
 ### Spark Interfaces
 
@@ -184,7 +191,7 @@ This UI provides an overview of the Spark cluster, including the status of jobs,
 
 ---
 
-For more details, refer to the official documentation: [Spark Monitoring and Instrumentation](https://spark.apache.org/docs/latest/monitoring.html)
+*For more details, refer to the official documentation: [Spark Monitoring and Instrumentation](https://spark.apache.org/docs/latest/monitoring.html)*
 
 ### Accessing Spark History Server
 To view the history of completed Spark applications, you can access the Spark History Server at: [http://localhost:18080](http://localhost:18080).
@@ -192,7 +199,7 @@ To view the history of completed Spark applications, you can access the Spark Hi
 This interface allows you to review the details of past Spark jobs, including execution times and resource usage.
 
 ---
-For more details, refer to the official documentation: [Spark History Server](https://spark.apache.org/docs/latest/monitoring.html#viewing-after-the-fact)
+*For more details, refer to the official documentation: [Spark History Server](https://spark.apache.org/docs/latest/monitoring.html#viewing-after-the-fact)*
 
 
 
@@ -220,5 +227,5 @@ For any questions or issues, please refer to the following resources:
 
 ---
 
-For further assistance, feel free to contact me directly at [mathieu.masson@alten.com](mailto:mathieu.masson@alten.com).
+*For further assistance, feel free to contact me directly at [mathieu.masson@alten.com](mailto:mathieu.masson@alten.com).*
 
