@@ -1,8 +1,8 @@
-# Spark Cluster Repository
+# Local Spark Cluster Repository
 
 ## Purpose
 
-This repository contains a Docker-based setup for a Spark cluster to run Python scripts.
+This repository contains a Docker-based setup for a Spark cluster to run Pyspark scripts.
 
 It offers a containerized Spark environment that allows users to run small Spark scripts locally for testing and verification purposes.
 
@@ -10,7 +10,7 @@ It offers a containerized Spark environment that allows users to run small Spark
 ## Repository Structure
 
    ```bash
-   spark-cluster/
+   local-spark-cluster/
     ├── docker-compose.yml   # Docker Compose configuration
     ├── src/                 # Source code for Python scripts
     │ ├── init.py 
