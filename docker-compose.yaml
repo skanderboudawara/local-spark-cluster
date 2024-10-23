@@ -20,6 +20,7 @@ services:
     volumes:
       - ./src:/src
       - spark-events:/opt/spark/work-dir/spark-events
+      - ./data/input:/opt/spark/work-dir/data/input
     command: ["/bin/bash", "-c", "spark-class org.apache.spark.deploy.master.Master & spark-class org.apache.spark.deploy.history.HistoryServer"]
 
   spark-worker:
@@ -36,7 +37,6 @@ services:
       - SPARK_USER=spark
     volumes:
       - ./data/output:/opt/spark/work-dir/data/output
-      - ./data/input:/opt/spark/work-dir/data/input
 
 volumes:
   spark-events:
