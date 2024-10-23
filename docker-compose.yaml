@@ -37,6 +37,7 @@ services:
       - SPARK_USER=spark
     volumes:
       - ./data/output:/opt/spark/work-dir/data/output
+      - ./data/input:/opt/spark/work-dir/data/input
 
 volumes:
   spark-events:
