@@ -62,7 +62,7 @@ case "$1" in
         stop
         ;;
     status)
-        stop
+        status
         ;;
     run)
         shift
