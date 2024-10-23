@@ -194,7 +194,7 @@ If you're unsure how to structure your script, a template is available at [./src
 
 This template includes the basic setup for initializing a Spark session, reading input data, processing data and writing an output dataset.
 
-## Executing Python Scripts
+## **Executing Python Scripts**
 
 You can run your spark scripts using either the Docker Compose command or the provided deployment scripts:
 
@@ -240,9 +240,9 @@ spark-submit /src/scripts/script1.py
 ---
 
 
-### Spark Interfaces
+## **Spark Interfaces**
 
-### Accessing the Spark UI
+### **1. Accessing the Spark UI**
 You can access the Spark Master web UI to monitor your cluster and jobs by navigating to: [http://localhost:8080](http://localhost:8080).
 
 This UI provides an overview of the Spark cluster, including the status of jobs, executors, and other resources.
@@ -251,7 +251,7 @@ This UI provides an overview of the Spark cluster, including the status of jobs,
 
 *For more details, refer to the official documentation: [Spark Monitoring and Instrumentation](https://spark.apache.org/docs/latest/monitoring.html)*
 
-### Accessing Spark History Server
+### **2. Accessing Spark History Server**
 To view the history of completed Spark applications, you can access the Spark History Server at: [http://localhost:18080](http://localhost:18080).
 
 This interface allows you to review the details of past Spark jobs, including execution times and resource usage.
@@ -261,7 +261,7 @@ This interface allows you to review the details of past Spark jobs, including ex
 
 
 
-## Stopping the Spark Cluster
+## **Stopping the Spark Cluster**
 
 When you are finished using the Spark cluster, you can stop all running containers.
 
@@ -286,7 +286,7 @@ You can stop hte PSark Cluster using either the Docker Compose command or the pr
 
 These command will stop and remove the containers defined in the docker-compose.yaml.
 
-## Conclusion
+## **Conclusion**
 
 This repository provides a Spark environment to run small PySpark scripts.
 
