@@ -9,23 +9,25 @@ It offers a containerized Spark environment that allows users to run small Spark
 
 ## Repository Structure
 
-   ```bash
-   local-spark-cluster/
-    ├── docker-compose.yml   # Docker Compose configuration
-    ├── src/                 # Source code for Python scripts
-    │ ├── init.py 
-    │ ├── spark_session.py   # Script to initialize Spark session
-    │ └── scripts/           # Directory for user scripts 
-    │  ├── init.py 
-    │  ├── script1.py        # Example Python script 1 
-    │  └── script2.py        # Example Python script 2 
-    ├── data/                # Output data storage 
-    │  └── input/
-    │  └── output/ 
-    ├── README.md            # Project documentation
-    ├── requirements.txt     # Python dependencies
-    └── .gitignore
-   ```
+```bash
+local-spark-cluster/
+ ├── docker-compose.yml   # Docker Compose configuration
+ ├── src/                 # Source code for Python scripts
+ │ ├── init.py 
+ │ ├── spark_session.py   # Script to initialize Spark session
+ │ └── scripts/           # Directory for user scripts 
+ │  ├── init.py 
+ │  ├── script1.py        # Example Python script 1 
+ │  └── script2.py        # Example Python script 2 
+ ├── data/                # Output data storage 
+ │  └── input/
+ │  └── output/
+ ├── .gitignore
+ ├── docker-compose.yaml  # Docker configuration
+ ├── README.md            # Project documentation
+ ├── spark_cluster.bat    # Batch script to manage spark cluster
+ └── spark_cluster.sh     # Bash script to manage spark cluster
+```
 
 ## Getting Started
 
@@ -33,10 +35,6 @@ It offers a containerized Spark environment that allows users to run small Spark
 
 - **[Docker](https://docs.docker.com/get-docker/)** and **[Docker Compose](https://docs.docker.com/compose/install/)** installed on your machine.
 - Basic understanding of **[Apache Spark](https://spark.apache.org/)** and **[Python](https://www.python.org/)**.
-- Install required Python packages:
-   ```bash
-   pip install -r requirements.txt
-   ```
 
 ### **Launching the Spark Cluster**
 
@@ -50,13 +48,42 @@ cd path/to/your_local_repository
 
 *⚠️ Make sure to replace `path/to/your_local_repository` with your local repository path*
 
-#### 2. **Start the Docker containers using Docker Compose:**
+#### 2. **Start Docker containers:**
 
+You can start the Docker containers using either the Docker Compose command or the provided deployment scripts:
+
+##### 1. Using deployment scripts:
+
+*Linux/Mac:*
 ```bash
-docker compose up -d
+./spark_cluster.sh deploy
+```
+*Windows:*
+```batch
+.\spark_cluster.bat deploy
 ```
 
+##### 2. Using docker compose:
+
+   ```bash
+   docker compose up -d
+   ```
+
 #### 3. **Check the status of your containers:**
+
+##### 1. Using deployment scripts:
+
+*Linux/Mac:*
+```bash
+./spark_cluster.sh status
+```
+*Windows:*
+```batch
+.\spark_cluster.bat status
+```
+
+##### 1. Using docker compose:
+
 ```bash
 docker compose ps
 ```
@@ -99,6 +126,8 @@ To do so, follow the process outlined below.
 #### 1. **Importing the Spark Session:**
 
 To initialize a Spark session, import the `get_spark_session` function from the `spark_session` module:
+- In the `get_spark_session` function, you need to provide a unique name for your Spark application.
+- This name will identify the application in the Spark UI and will also be used to define the input and output paths. 
 
 ```python
 from spark_session import get_spark_session
@@ -106,21 +135,37 @@ from spark_session import get_spark_session
 # Get the spark session and specify a name for your spark application
 spark_session = get_spark_session("YourSparkApplicationName")
 ```
-In the `get_spark_session` function, you need to provide a unique name for your Spark application. 
-
-This name will identify the application in the Spark UI and will also be used to define the input and output paths.
 
 #### 3. **Input Data**
 
-Place your input files in [./data/input/YourSparkApplicationName](./data/input)
+Place your input files in [./data/input/YourSparkApplicationName](./data/input).
+
+To use your inputs, utilize the `read_dataframe` function, which extends the Spark DataFrame functionality:
+- This function read files from the [data/input](./data/input/) folder 
+- This function automatically determines the file format based on the file extension.
+- Additionally, you can pass various Spark read options through `**kwargs` to customize the reading process.
+
+Supported input file formats:
+
+- **CSV**
+- **Parquet**
+- **JSON**
+
+Example:
+```python
+# Example usage of read_dataframe function
+df = spark_session.read_dataframe(
+    "YourSparkApplicationName/data.csv",  # Specify the input file with its path
+    header=True,                          # Example of a Spark read option
+    inferSchema=True,                     # Another Spark read option
+)
+```
 
 ---
 
 *⚠️ Replace `YourSparkApplicationName` with the name you used when initializing the Spark session.*
 
 ---
-
-This ensures your input files to be correctly accessible for your application.
 
 #### 2. **Writing your Spark logic**
 
@@ -128,15 +173,9 @@ After initializing the Spark session, you can write your Spark logic as needed, 
 
 #### 3. **Writing output data**
 
-To write your DataFrame output, use the `write_dataframe` function, which extends the Spark DataFrame functionality. 
+To write your DataFrame output, use the `write_dataframe` function, which extends the Spark DataFrame functionality:
+- The output will be saved to [./data/output/YourSparkApplicationName](./data/input):
 
-The output will be saved to [./data/output/YourSparkApplicationName](./data/input):
-
----
-
-*⚠️ Replace `YourSparkApplicationName` with the name you used when initializing the Spark session.*
-
----
 
 You can write the output in fthe following format:
 - `csv`
@@ -151,13 +190,32 @@ You can write the output in fthe following format:
 
 #### 5. **Script Template**
 
-If you're unsure how to structure your script, a template is available at [./src/scripts/script_template.py](./src/scripts/script_template.py).
+If you're unsure how to structure your script, a template is available at [./src/scripts/script_template.py](./src/scripts/script_template.py)
 
-This template includes the basic setup for initializing a Spark session, processing data and writing an output dataset.
+This template includes the basic setup for initializing a Spark session, reading input data, processing data and writing an output dataset.
 
 ## Executing Python Scripts
 
-To run a Python script using spark-submit, follow these steps:
+You can run your spark scripts using either the Docker Compose command or the provided deployment scripts:
+
+### 1. Using Deployment Scripts
+
+*Linux/Mac:*
+```bash
+./spark_cluster.sh run <script1.py>
+```
+*Windows:*
+```batch
+.\spark_cluster.bat run <script1.py>
+```
+
+---
+
+*⚠️ Make sure to replace `script1.py` with the name of your script.*
+
+---
+
+### 2. Using Docker Compose
 
 #### 1. **Access the Spark Master Container:**
 
@@ -170,14 +228,14 @@ To run a Python script using spark-submit, follow these steps:
 Use `spark-submit` to execute your script:
 
 ``` bash
-spark-submit /opt/spark/src/scripts/script1.py
+spark-submit /src/scripts/script1.py
 ```
 
 ---
 
 *⚠️ Make sure to replace `script1.py` with the name of your script.*
 
-*Scripts are located in the `/opt/spark/src/scripts/` directory within the container*
+*Scripts are located in the `/src/scripts/` directory within the container*
 
 ---
 
@@ -205,13 +263,28 @@ This interface allows you to review the details of past Spark jobs, including ex
 
 ## Stopping the Spark Cluster
 
-When you are finished using the Spark cluster, you can stop all running containers by executing:
+When you are finished using the Spark cluster, you can stop all running containers.
 
+You can stop hte PSark Cluster using either the Docker Compose command or the provided deployment scripts:
+
+### 1. Using Deployment Scripts
+
+*Linux/Mac:*
 ```bash
-docker-compose down
+./spark_cluster.sh stop
+```
+*Windows:*
+```batch
+.\spark_cluster.bat stop
 ```
 
-This command will stop and remove the containers defined in the docker-compose.yml.
+### 2. Using Docker Compose
+
+```bash
+ docker compose down
+```
+
+These command will stop and remove the containers defined in the docker-compose.yaml.
 
 ## Conclusion
 
