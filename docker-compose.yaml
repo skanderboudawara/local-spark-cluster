@@ -22,6 +22,8 @@ services:
       - ./src/logs:/opt/bitnami/spark/logs
       - spark-events:/opt/spark/work-dir/spark-events
       - ./data:/opt/spark/work-dir/data
+    networks:
+      - spark-net
     command: ["/bin/bash", "-c", "spark-class org.apache.spark.deploy.master.Master & spark-class org.apache.spark.deploy.history.HistoryServer"]
 
   spark-worker:
@@ -39,6 +41,12 @@ services:
     volumes:
       - ./src/logs:/opt/bitnami/spark/logs
       - ./data:/opt/spark/work-dir/data
+    networks:
+      - spark-net
 
 volumes:
   spark-events:
+
+networks:
+  spark-net:
+    driver: bridge  # Defines a custom bridge network

@@ -1,9 +1,9 @@
 import uuid
 import inspect
-from api._utils import filter_kwargs, spark_session
-from api._compute import Compute
-from api._dataset import Input, Output
-from api._logger import logger
+from compute._utils import filter_kwargs, spark_session
+from compute._compute import Compute
+from compute._dataset import Input, Output
+from compute._logger import logger
 
 from typing import Any, Callable, Union, Dict
 
@@ -18,17 +18,6 @@ def compute(**compute_dict: Dict[str, Union[Input, Output, Any]]) -> Callable:
     """
     def wrapper(compute_func):
         def wrapped_func(*f_args, **f_kwargs):
-                caller_frame = inspect.stack()
-                filtered_filenames = [
-                    item.filename
-                    for item in caller_frame
-                    if "module" in item.function
-                ]
-                
-                caller_path = filtered_filenames[0]
-                # Print the caller path
-                print(f"AAAAAAAAAAAAAAAAAAAAAA Called from: {caller_path}")
-
                 filtered_inputs = filter_kwargs(compute_dict, Input)
                 filtered_outputs = filter_kwargs(compute_dict, Output)
                 logger.info("Inputs and Outputs loaded")

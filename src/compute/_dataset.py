@@ -1,8 +1,8 @@
 from typing import Optional
 from pyspark.sql import SparkSession, DataFrame, DataFrameWriter
 from pyspark.sql.types import StructType
-from api._utils import get_file_extension, sanitize_columns, extract_file_name, list_folder_contents
-from api._logger import logger
+from compute._utils import get_file_extension, sanitize_columns, extract_file_name, list_folder_contents
+from compute._logger import logger
 from functools import cached_property
 
 class DataStorage:

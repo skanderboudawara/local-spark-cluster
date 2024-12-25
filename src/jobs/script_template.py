@@ -13,5 +13,7 @@ processed_df = df.select("ID", "Name")
 # Change this to "json" or "parquet" as needed
 processed_df.write_dataframe("csv")
 
+processed_df.show()
+
 # Stop the Spark session
 spark_session.stop()

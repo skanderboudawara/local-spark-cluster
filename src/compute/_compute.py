@@ -1,9 +1,9 @@
 from typing import Any, Callable, Dict, Optional
 import inspect
-from api._dataset import Input, Output
+from compute._dataset import Input, Output
 import uuid
-from api._utils import spark_session
-from api._logger import logger
+from compute._utils import spark_session
+from compute._logger import logger
 
 class Compute:
     def __init__(
@@ -51,4 +51,6 @@ class Compute:
             kwargs["spark"] = self.spark
         kwargs.update(self.inputs)
         kwargs.update(self.outputs)
-        return self.compute_func(*args, **kwargs)
+        result = self.compute_func(*args, **kwargs)
+        self.spark.stop()
+        return result

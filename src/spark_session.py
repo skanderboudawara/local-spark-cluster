@@ -1,5 +1,5 @@
 from pyspark.sql import DataFrame, SparkSession
-
+import os
 
 def get_spark_session(app_name: str) -> SparkSession:
     """
@@ -12,10 +12,12 @@ def get_spark_session(app_name: str) -> SparkSession:
     return SparkSession.builder \
         .appName(app_name) \
         .master("spark://spark-master:7077") \
-        .config("spark.eventLog.enabled", "true") \
+        .config("spark.eventLog.enabled", "false") \
+        .config("spark.ui.showConsoleProgress", "false") \
         .config("spark.eventLog.dir", "file:///opt/spark/work-dir/spark-events") \
         .config("spark.default.output.path", "/opt/spark/work-dir/data/output") \
         .config("spark.default.input.path", "/opt/spark/work-dir/data/input") \
+        .config("spark.hadoop.security.authorization", "false") \
         .getOrCreate()
 
 

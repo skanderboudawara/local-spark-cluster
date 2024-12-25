@@ -1,8 +1,8 @@
 """
 This transformation script reads a CSV file, selects a column, and writes the result to a new CSV file.
 """
-from api.decorators import compute, cluster_conf
-from api._dataset import Input, Output
+from compute.decorators import compute, cluster_conf
+from compute._dataset import Input, Output
 from pyspark.sql import DataFrame
 from pyspark.sql.functions import col, lit
 from pyspark.sql.types import IntegerType
@@ -22,12 +22,10 @@ def compute_random(random: DataFrame, output: Output) -> None:
     :return: None
     """
     random = random.dataframe()
-    random.show()
     
     random = random.select(
         (col("ID").cast(IntegerType())*lit(2)).alias("ID2")
     )
-    
     random.show()
     
     output.write(random)
