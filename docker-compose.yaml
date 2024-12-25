@@ -19,8 +19,9 @@ services:
       - "18080:18080"  # Spark History Server Web UI
     volumes:
       - ./src:/src
+      - ./src/logs:/opt/bitnami/spark/logs
       - spark-events:/opt/spark/work-dir/spark-events
-      - ./data/input:/opt/spark/work-dir/data/input
+      - ./data:/opt/spark/work-dir/data
     command: ["/bin/bash", "-c", "spark-class org.apache.spark.deploy.master.Master & spark-class org.apache.spark.deploy.history.HistoryServer"]
 
   spark-worker:
@@ -36,8 +37,8 @@ services:
       - SPARK_SSL_ENABLED=no
       - SPARK_USER=spark
     volumes:
-      - ./data/output:/opt/spark/work-dir/data/output
-      - ./data/input:/opt/spark/work-dir/data/input
+      - ./src/logs:/opt/bitnami/spark/logs
+      - ./data:/opt/spark/work-dir/data
 
 volumes:
   spark-events:

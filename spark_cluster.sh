@@ -4,9 +4,9 @@ BASE_PATH="//src/scripts"
 
 deploy() {
     echo "Deploying the Spark cluster..."
-    docker-compose up -d --build
+    docker compose up -d --build
     if [ $? -eq 0 ]; then
-        echo "✅ Spark cluster successfuly deployed!"
+        echo "✅ Spark cluster successfully deployed!"
     else
         echo "❌ Failed to deploy the Spark cluster." >&2
         exit 1
@@ -15,9 +15,9 @@ deploy() {
 
 stop() {
     echo "Stopping the Spark cluster..."
-    docker-compose down
+    docker compose down
     if [ $? -eq 0 ]; then
-        echo "✅ Spark cluster successfuly stopped!"
+        echo "✅ Spark cluster successfully stopped!"
     else
         echo "❌ Failed to stop the Spark cluster." >&2
         exit 1
@@ -27,7 +27,7 @@ stop() {
 
 status() {
     echo "Checking Spark cluster status..."
-    docker-compose ps
+    docker compose ps
     exit /b
 }
 
