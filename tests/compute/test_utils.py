@@ -1,10 +1,8 @@
 import os
 import shutil
 
-from pyspark.sql import SparkSession
-
 import src.compute._utils as utils
-from tests.conftest import spark_session
+
 
 class TestFilterKwargs:
     def test_empty_dict(self):

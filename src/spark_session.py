@@ -14,11 +14,12 @@ def get_spark_session(app_name: str) -> SparkSession:
     return SparkSession.builder \
         .appName(app_name) \
         .config("spark.master", os.environ.get("SPARK_MASTER_URL", "spark://localhost:7077")) \
-        .config("spark.ui.showConsoleProgress", "false") \
         .config("spark.eventLog.enabled", "false") \
+        .config("spark.ui.showConsoleProgress", "false") \
         .config("spark.eventLog.dir", "file:///opt/spark/work-dir/spark-events") \
         .config("spark.default.output.path", "/opt/spark/work-dir/data/output") \
         .config("spark.default.input.path", "/opt/spark/work-dir/data/input") \
+        .config("spark.hadoop.security.authorization", "false") \
         .getOrCreate()
 
 

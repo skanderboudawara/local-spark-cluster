@@ -7,7 +7,6 @@ sys.path.append("src/")
 
 from pyspark.sql import DataFrame
 from pyspark.sql.functions import col, lit
-from pyspark.sql.types import IntegerType
 
 from compute._dataset import Input, Output
 from compute.decorators import cluster_conf, compute
@@ -27,14 +26,12 @@ def compute_random(random: DataFrame, output: Output) -> None:
 
     :return: None
     """
+    print(random.path)
     random = random.dataframe()
 
-    random = random.select(
-        (col("ID").cast(IntegerType()) * lit(2)).alias("ID2"),
-    )
     random.show()
 
-    output.write(random)
+    # output.write(random)
 
 
 if __name__ == "__main__":
