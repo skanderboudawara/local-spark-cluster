@@ -14,12 +14,10 @@ def get_spark_session(app_name: str) -> SparkSession:
     return SparkSession.builder \
         .appName(app_name) \
         .master("local") \
-        .config("spark.eventLog.enabled", "false") \
         .config("spark.ui.showConsoleProgress", "false") \
         .config("spark.eventLog.dir", "file:///opt/spark/work-dir/spark-events") \
         .config("spark.default.output.path", "/opt/bitnami/spark/data") \
         .config("spark.default.input.path", "/opt/bitnami/spark/data") \
-        .config("spark.hadoop.security.authorization", "false") \
         .getOrCreate()
 
 
@@ -56,7 +54,7 @@ def read_dataframe(spark_session: SparkSession, file_name: str, file_extension: 
     raise ValueError(f"Unsupported format: {file_extension}. Please choose 'csv', 'json', or 'parquet'.")
 
 
-def write_dataframe(df: DataFrame, format: str, custom_name: str) -> None:
+def write_dataframe(df: DataFrame, format: str, custom_name: str=None) -> None:
     """
     This method writes the output DataFrame locally in the specified format (csv, json, or parquet).
 
