@@ -31,7 +31,7 @@ def spark_session(app_name: str, conf: Optional[dict] = None) -> SparkSession:
     """
     default_session = SparkSession.builder \
         .appName(app_name) \
-        .master("local") \
+        .master(os.environ.get("SPARK_MASTER_URL", "local")) \
         .config("spark.eventLog.enabled", "false") \
         .config("spark.ui.showConsoleProgress", "false") \
         .config("spark.eventLog.dir", "file:///opt/spark/work-dir/spark-events") \

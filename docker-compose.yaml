@@ -5,7 +5,6 @@ services:
     image: bitnami/spark:latest
     environment:
       - SPARK_MODE=master
-      - SPARK_LOCAL_IP=spark-master
       - SPARK_MASTER_URL=spark://spark-master:7077
       - SPARK_RPC_AUTHENTICATION_ENABLED=no
       - SPARK_RPC_ENCRYPTION_ENABLED=no

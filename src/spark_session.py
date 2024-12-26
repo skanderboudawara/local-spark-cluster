@@ -13,7 +13,7 @@ def get_spark_session(app_name: str) -> SparkSession:
     """
     return SparkSession.builder \
         .appName(app_name) \
-        .master("local") \
+        .master(os.environ.get("SPARK_MASTER_URL", "local")) \
         .config("spark.ui.showConsoleProgress", "false") \
         .config("spark.eventLog.dir", "file:///opt/spark/work-dir/spark-events") \
         .config("spark.default.output.path", "/opt/bitnami/spark/data") \
