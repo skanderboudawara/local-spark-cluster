@@ -1,8 +1,9 @@
 from pyspark.sql import DataFrame
 from pyspark.sql.functions import col
 
+
 class Validator:
-    def __init__(self, dataframe: DataFrame):
+    def __init__(self, dataframe: DataFrame) -> None:
         self._dataframe = dataframe
 
     def __getattr__(self, name):
@@ -10,7 +11,7 @@ class Validator:
         Delegate attribute access to the underlying DataFrame.
         """
         return getattr(self._dataframe, name)
-    
+
     @staticmethod
     def _check_msg_strategy(msg: str, strategy: str) -> None:
         """
@@ -20,9 +21,9 @@ class Validator:
             raise ValueError("Argument 'msg' must be a string.")
         if not isinstance(strategy, str):
             raise ValueError("Argument 'strategy' must be a string.")
-        if strategy not in set(["fail", "warn"]):
+        if strategy not in {"fail", "warn"}:
             raise ValueError("Argument 'strategy' must be either 'fail' or 'warn'.")
-    
+
     @staticmethod
     def _print_or_raise(msg: str, strategy: str) -> None:
         """
@@ -30,13 +31,13 @@ class Validator:
         """
         if strategy == "fail":
             raise ValueError(msg)
-        elif strategy == "warn":
-            print(msg)
+        if strategy == "warn":
+            pass
         else:
             raise ValueError("Invalid strategy.")
-    
+
     @staticmethod
-    def _check_failure(self, df: DataFrame, msg: str, strategy: str):
+    def _check_failure(self, df: DataFrame, msg: str, strategy: str) -> None:
         """
         This method is used to check if the DataFrame is empty.
         """
@@ -45,9 +46,9 @@ class Validator:
         self._check_msg_strategy(msg, strategy)
         if not df.isEmpty():
             self._print_or_raise(msg, strategy)
-    
+
     @staticmethod
-    def _condition_failure(self, condition: bool, msg:str, strategy: str):
+    def _condition_failure(self, condition: bool, msg: str, strategy: str) -> None:
         if not isinstance(condition, bool):
             raise ValueError("Argument 'condition' must be a boolean.")
         self._check_msg_strategy(msg, strategy)
@@ -67,7 +68,7 @@ class Validator:
         self._check_failure(
             invalid_count,
             f"Columns {', '.join(args)} have duplicate values.",
-            strategy
+            strategy,
         )
         return self
 
@@ -79,7 +80,7 @@ class Validator:
         self._check_failure(
             invalid_count,
             f"Column '{colB}' has values that do not match the regex pattern '{pattern}'.",
-            strategy
+            strategy,
         )
 
         return self
@@ -92,10 +93,10 @@ class Validator:
         self._check_failure(
             invalid_count,
             f"Column '{colA}' does not equal '{colB}'",
-            strategy
+            strategy,
         )
         return self
-    
+
     def checkCount(self, row_count: int, strategy: str):
         """
         Checks if all values in the given column match the provided regex pattern.
@@ -104,7 +105,7 @@ class Validator:
         self._condition_failure(
             invalid_count != row_count,
             f"Row count does not equal {row_count}",
-            strategy
+            strategy,
         )
         return self
 
@@ -112,6 +113,7 @@ class Validator:
 # Adding a property to PySpark DataFrame to enable the validator
 def validator(self):
     return Validator(self)
+
 
 # Add the validator property to the DataFrame class
 DataFrame.validator = property(validator)

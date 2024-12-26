@@ -4,6 +4,7 @@ from pyspark.sql.window import Window
 
 from spark_session import get_spark_session
 
+
 def do_exercice(df: DataFrame) -> DataFrame:
     # Define a window specification
     # The window is partitioned by year and ordered by quarter
@@ -28,6 +29,7 @@ def do_exercice(df: DataFrame) -> DataFrame:
     )
 
     return df
+
 
 # Create Spark session
 spark_session = get_spark_session("PysparkWindow")

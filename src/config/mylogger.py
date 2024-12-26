@@ -1,9 +1,9 @@
-import json
+from __future__ import annotations
+
 import datetime as dt
+import json
 import logging
 from typing import override
-
-
 
 LOG_RECORD_BUILTIN_ATTRS = {
     "args",
@@ -31,12 +31,13 @@ LOG_RECORD_BUILTIN_ATTRS = {
     "taskName",
 }
 
+
 class MyJSONFormatter(logging.Formatter):
     def __init__(
         self,
         *,
         fmt_keys: dict[str, str] | None = None,
-    ):
+    ) -> None:
         super().__init__()
         self.fmt_keys = fmt_keys if fmt_keys is not None else {}
 
@@ -49,7 +50,7 @@ class MyJSONFormatter(logging.Formatter):
         always_fields = {
             "message": record.getMessage(),
             "timestamp": dt.datetime.fromtimestamp(
-                record.created, tz=dt.timezone.utc
+                record.created, tz=dt.timezone.utc,
             ).isoformat(),
         }
         if record.exc_info is not None:

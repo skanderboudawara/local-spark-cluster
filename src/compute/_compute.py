@@ -1,38 +1,40 @@
-from typing import Any, Callable, Dict, Optional
 import inspect
-from compute._dataset import Input, Output
 import uuid
-from compute._utils import spark_session
+from typing import Any, Callable, Optional
+
+from compute._dataset import Input, Output
 from compute._logger import logger
+from compute._utils import spark_session
+
 
 class Compute:
     def __init__(
         self,
         compute_func: Callable[..., Any],
-        inputs: Optional[Dict[str, Input]] = None,
-        outputs: Optional[Dict[str, Output]] = None,
-        params: Optional[Dict[str, Any]] = None
+        inputs: Optional[dict[str, Input]] = None,
+        outputs: Optional[dict[str, Output]] = None,
+        params: Optional[dict[str, Any]] = None,
     ) -> None:
         """
         This class is used to define a compute task with inputs and outputs.
-        
+
         :param compute_func: (Callable), Function to be executed.
         :param inputs: (dict), Dictionary of input objects.
         :param outputs: (dict), Dictionary of output objects.
-        
+
         :returns: None
         """
         self.compute_func = compute_func
-        self.spark = params.get("spark", spark_session(f"master_{str(uuid.uuid4())}"))
+        self.spark = params.get("spark", spark_session(f"master_{uuid.uuid4()!s}"))
         self.inputs = inputs or {}
         # self.inputs = {k: v.read for k, v in inputs.items()} if inputs else {}
         logger.info("Inputs loaded via Compute class")
         self.outputs = outputs or {}
         logger.info("Outputs loaded via Compute class")
-        
+
         # Extract metadata from the compute function
         self._initialize_function(compute_func)
-        
+
     @property
     def app_name(self):
         return self.spark.sparkContext.appName

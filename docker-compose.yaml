@@ -6,6 +6,7 @@ services:
     image: bitnami/spark:latest
     environment:
       - SPARK_MODE=master
+      - SPARK_MASTER_URL=spark://spark-master:7077
       - SPARK_RPC_AUTHENTICATION_ENABLED=no
       - SPARK_RPC_ENCRYPTION_ENABLED=no
       - SPARK_LOCAL_STORAGE_ENCRYPTION_ENABLED=no
@@ -22,6 +23,8 @@ services:
       - ./src/logs:/opt/bitnami/spark/logs
       - spark-events:/opt/spark/work-dir/spark-events
       - ./data:/opt/spark/work-dir/data
+    extra_hosts:
+      - "host.docker.internal:192.168.1.89"
     networks:
       - spark-net
     command: ["/bin/bash", "-c", "spark-class org.apache.spark.deploy.master.Master & spark-class org.apache.spark.deploy.history.HistoryServer"]
@@ -38,6 +41,8 @@ services:
       - SPARK_LOCAL_STORAGE_ENCRYPTION_ENABLED=no
       - SPARK_SSL_ENABLED=no
       - SPARK_USER=spark
+    extra_hosts:
+      - "host.docker.internal:192.168.1.89"
     volumes:
       - ./src/logs:/opt/bitnami/spark/logs
       - ./data:/opt/spark/work-dir/data
@@ -49,4 +54,4 @@ volumes:
 
 networks:
   spark-net:
-    driver: bridge  # Defines a custom bridge network
+    driver: bridge
