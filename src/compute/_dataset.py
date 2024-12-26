@@ -74,9 +74,7 @@ class DataStorage:
             raise ValueError("Argument 'in_out' must be a string.")
         if in_out not in {"input", "output"}:
             raise ValueError("Argument 'in_out' must be either 'input' or 'output'.")
-        spark_default_path = self.session.conf.get(f"spark.default.{in_out}.path")
-        path = f"{spark_default_path}/{self.path}"
-        return path
+        return self.path
 
     @cached_property
     def extension(self):

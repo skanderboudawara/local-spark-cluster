@@ -31,12 +31,12 @@ def spark_session(app_name: str, conf: Optional[dict] = None) -> SparkSession:
     """
     default_session = SparkSession.builder \
         .appName(app_name) \
-        .config("spark.master", os.environ.get("SPARK_MASTER_URL", "spark://localhost:7077")) \
+        .master("local") \
         .config("spark.eventLog.enabled", "false") \
         .config("spark.ui.showConsoleProgress", "false") \
         .config("spark.eventLog.dir", "file:///opt/spark/work-dir/spark-events") \
-        .config("spark.default.output.path", "/opt/spark/work-dir/data") \
-        .config("spark.default.input.path", "/opt/spark/work-dir/data")
+        .config("spark.default.output.path", "/opt/bitnami/spark") \
+        .config("spark.default.input.path", "/opt/bitnami/spark")
     session = default_session.config(map=conf) if conf else default_session
     return session.getOrCreate()
 

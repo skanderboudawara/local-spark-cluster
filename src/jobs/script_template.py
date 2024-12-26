@@ -11,13 +11,22 @@ spark_session = get_spark_session(app_name)
 
 # Create a random DataFrame
 df = spark_session.range(0, 100).withColumn("random", rand())
+# Show the DataFrame
 df.show()
-# # Save the DataFrame to a CSV file
+
+# Save the DataFrame to a CSV file
 df.write_dataframe(format="csv")
 
-# # Load data
-# processed_df = spark_session.read_dataframe("random_data.csv", header=True, inferSchema=True)
-# processed_df.show()
+# Load the dataframe
+processed_df = spark_session.read_dataframe(
+    "data/output/YourSparkApplicationName",
+    file_extension="csv",
+    header=True,
+    inferSchema=True
+)
+
+# Show the first three rows of the DataFrame
+processed_df.limit(3).show()
 
 # Stop the Spark session
 spark_session.stop()

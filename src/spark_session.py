@@ -13,17 +13,17 @@ def get_spark_session(app_name: str) -> SparkSession:
     """
     return SparkSession.builder \
         .appName(app_name) \
-        .config("spark.master", os.environ.get("SPARK_MASTER_URL", "spark://localhost:7077")) \
+        .master("local") \
         .config("spark.eventLog.enabled", "false") \
         .config("spark.ui.showConsoleProgress", "false") \
         .config("spark.eventLog.dir", "file:///opt/spark/work-dir/spark-events") \
-        .config("spark.default.output.path", "/opt/spark/work-dir/data/output") \
-        .config("spark.default.input.path", "/opt/spark/work-dir/data/input") \
+        .config("spark.default.output.path", "/opt/bitnami/spark/data") \
+        .config("spark.default.input.path", "/opt/bitnami/spark/data") \
         .config("spark.hadoop.security.authorization", "false") \
         .getOrCreate()
 
 
-def read_dataframe(spark_session: SparkSession, file_name: str, **kwargs) -> DataFrame:
+def read_dataframe(spark_session: SparkSession, file_name: str, file_extension: str, **kwargs) -> DataFrame:
     """
     This method reads input data into a DataFrame from a file.
 
@@ -35,6 +35,8 @@ def read_dataframe(spark_session: SparkSession, file_name: str, **kwargs) -> Dat
 
     :param file_name: (str), Name of the input file to read (including the extension).
 
+    :param file_extension: (str), File extension of the input file (csv, json, or parquet).
+
     :param kwargs: Additional keyword arguments to pass to the Spark read method.
 
     :returns: (DataFrame), DataFrame containing the input data.
@@ -42,25 +44,19 @@ def read_dataframe(spark_session: SparkSession, file_name: str, **kwargs) -> Dat
     :raises ValueError: If the file format is unsupported or if no file extension is provided.
     """
     # Extract the file format from the file extension
-    file_extension = file_name.split(".")[-1].lower()
-
-    # Get the default input path from Spark configuration
-    input_path = spark_session.conf.get("spark.default.input.path")
-
-    # Set the full input path
-    full_input_path = f"{input_path}/{file_name}"
+    file_extension = file_extension if file_extension else file_name.split(".")[-1].lower()
 
     # Read the DataFrame from the specified format
     if file_extension == "parquet":
-        return spark_session.read.parquet(full_input_path, **kwargs)
+        return spark_session.read.parquet(file_name, **kwargs)
     if file_extension == "csv":
-        return spark_session.read.csv(full_input_path, **kwargs)
+        return spark_session.read.csv(file_name, **kwargs)
     if file_extension == "json":
-        return spark_session.read.json(full_input_path, **kwargs)
+        return spark_session.read.json(file_name, **kwargs)
     raise ValueError(f"Unsupported format: {file_extension}. Please choose 'csv', 'json', or 'parquet'.")
 
 
-def write_dataframe(df: DataFrame, format: str) -> None:
+def write_dataframe(df: DataFrame, format: str, custom_name: str) -> None:
     """
     This method writes the output DataFrame locally in the specified format (csv, json, or parquet).
 
@@ -73,11 +69,10 @@ def write_dataframe(df: DataFrame, format: str) -> None:
     # Get the current Spark session
     spark_session = df.sql_ctx.sparkSession
 
-    # Get the default output path from Spark configuration
-    output_path = spark_session.conf.get("spark.default.output.path")
-
     # Set the full output path based on the application name
-    full_output_path = f"{output_path}/{spark_session.sparkContext.appName}"
+    full_output_path = f"data/output/{spark_session.sparkContext.appName}"
+
+    full_output_path = f"{full_output_path}/{custom_name}" if custom_name else full_output_path
 
     # Write the DataFrame to the specified format
     if format == "parquet":

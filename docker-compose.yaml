@@ -6,10 +6,10 @@ services:
     image: bitnami/spark:latest
     environment:
       - SPARK_MODE=master
+      - SPARK_LOCAL_IP=spark-master
       - SPARK_MASTER_URL=spark://spark-master:7077
       - SPARK_RPC_AUTHENTICATION_ENABLED=no
       - SPARK_RPC_ENCRYPTION_ENABLED=no
-      - SPARK_LOCAL_DIRS=/opt/spark/work-dir
       - SPARK_LOCAL_STORAGE_ENCRYPTION_ENABLED=no
       - SPARK_SSL_ENABLED=no
       - SPARK_USER=root
@@ -22,7 +22,7 @@ services:
     volumes:
       - ./src:/src
       - spark-events:/opt/spark/work-dir/spark-events
-      - ./data:/opt/spark/work-dir/data
+      - ./data:/opt/bitnami/spark/data
     networks:
       - spark-net
     command: ["/bin/bash", "-c", "spark-class org.apache.spark.deploy.master.Master & spark-class org.apache.spark.deploy.history.HistoryServer"]
@@ -32,16 +32,22 @@ services:
     environment:
       - SPARK_MODE=worker
       - SPARK_MASTER_URL=spark://spark-master:7077
-      - SPARK_WORKER_MEMORY=1G
-      - SPARK_WORKER_CORES=1
       - SPARK_RPC_AUTHENTICATION_ENABLED=no
       - SPARK_RPC_ENCRYPTION_ENABLED=no
       - SPARK_LOCAL_STORAGE_ENCRYPTION_ENABLED=no
       - SPARK_SSL_ENABLED=no
       - SPARK_USER=root
+      - SPARK_WORKER_CORES=1
+      - SPARK_WORKER_MEMORY=1G
+      - SPARK_DRIVER_MEMORY=128m
+      - SPARK_EXECUTOR_MEMORY=256m
     volumes:
       - ./src:/src
-      - ./data:/opt/spark/work-dir/data
+      - ./data:/opt/bitnami/spark/data
+    depends_on:
+      - spark-master
+    ports:
+      - "8081"
     networks:
       - spark-net
 
