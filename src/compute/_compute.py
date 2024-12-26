@@ -27,7 +27,6 @@ class Compute:
         self.compute_func = compute_func
         self.spark = params.get("spark", spark_session(f"master_{uuid.uuid4()!s}"))
         self.inputs = inputs or {}
-        # self.inputs = {k: v.read for k, v in inputs.items()} if inputs else {}
         logger.info("Inputs loaded via Compute class")
         self.outputs = outputs or {}
         logger.info("Outputs loaded via Compute class")
@@ -36,18 +35,39 @@ class Compute:
         self._initialize_function(compute_func)
 
     @property
-    def app_name(self):
+    def app_name(self) -> str:
+        """
+        This property returns the name of the Spark application.
+
+        :param: None
+
+        :returns: (str), Name of the Spark application.
+        """
         return self.spark.sparkContext.appName
 
     def _initialize_function(self, func: Callable[..., Any]) -> None:
-        """Extracts and stores metadata from the compute function."""
+        """
+        Extracts and stores metadata from the compute function.
+
+        :param func: (Callable), Function to be executed.
+
+        :returns: None
+        """
         self.__name__ = func.__name__
         self.__module__ = func.__module__
         self.__doc__ = func.__doc__
         self._arguments = inspect.getfullargspec(func)
         self._use_context = "spark" in self._arguments.args
 
-    def __call__(self, *args, **kwargs):
+    def __call__(self, *args: Any, **kwargs: Any) -> Any:
+        """
+        This method is called when the object is called as a function.
+
+        :param args: (Any), Positional arguments.
+        :param kwargs: (Any), Keyword arguments.
+
+        :returns: Any
+        """
         logger.info("Compute.__call__ triggered")
         if self._use_context:
             kwargs["spark"] = self.spark

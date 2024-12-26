@@ -4,7 +4,6 @@ import uuid
 import pytest
 from pyspark.sql import SparkSession
 
-
 @pytest.fixture(scope="session", autouse=True)
 def spark_session() -> SparkSession:
     """

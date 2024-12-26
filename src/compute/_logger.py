@@ -1,13 +1,5 @@
-import json
-import logging.config
-import logging.handlers
-import pathlib
+import logging
+
 
 logger = logging.getLogger("compute")
-
-config_file = pathlib.Path("/src/config/logger.json")
-with open(config_file, encoding="utf-8") as f_in:
-    config = json.load(f_in)
-
-logging.config.dictConfig(config)
 logging.basicConfig(level="INFO")

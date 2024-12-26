@@ -1,3 +1,19 @@
+[build-system]
+requires = ["setuptools", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "compute_package"
+version = "1.0.0"
+
+dependencies = [
+    "coverage",
+    "pyspark",
+    "pytest",
+    "pytest-cov",
+    "ruff",
+]
+
 [tool.coverage.run]
 concurrency = ["multiprocessing"]
 parallel = true
@@ -13,7 +29,8 @@ omit = [
     "_version.py"]
  
 [tool.pytest.ini_options]
-addopts = "-vv -p no:warnings --cov=src --cov-report=term-missing --cov-fail-under=100"
+addopts = "-vv -p no:warnings --import-mode=append --cov=src --cov-report=term-missing --cov-fail-under=100"
+pythonpath = [".", "src"]
 testpaths = ["tests"]
 python_files = ["test_*.py"]
 log_cli = true
