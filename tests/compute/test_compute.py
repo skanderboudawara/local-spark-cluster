@@ -1,10 +1,11 @@
-import pytest
 
 
 import src.compute._compute as C
 
-def dummy_compute_func(spark, input1, input2):
+
+def dummy_compute_func(spark, input1, input2, output1):
     return input1 + input2
+
 
 def test_compute_initialization(spark_session):
     inputs = {"input1": 1, "input2": 2}
@@ -17,7 +18,10 @@ def test_compute_initialization(spark_session):
     assert compute.inputs == inputs
     assert compute.outputs == outputs
     assert compute.spark == spark_session
-    assert compute.app_name.startswith("pytest-pyspark-local-testing")
+    assert compute.app_name.startswith("test_")
+
+    compute()
+
 
 def test_compute_call(spark_session):
     inputs = {"input1": 1, "input2": 2}

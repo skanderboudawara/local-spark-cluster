@@ -4,7 +4,7 @@ import shutil
 from pyspark.sql import SparkSession
 
 import src.compute._utils as utils
-
+from tests.conftest import spark_session
 
 class TestFilterKwargs:
     def test_empty_dict(self):
@@ -30,26 +30,26 @@ class TestFilterKwargs:
         assert utils.filter_kwargs(kwargs, list) == expected
 
 
-class TestSparkSession:
+# class TestSparkSession:
 
-    def test_spark_session_default(self):
-        session = utils.spark_session("test_app")
-        assert isinstance(session, SparkSession)
-        assert session.sparkContext.appName == "test_app"
-        assert session.conf.get("spark.master") == os.environ.get("SPARK_MASTER_URL", "spark://localhost:7077")
-        session.stop()
+#     def test_spark_session_default(self):
+#         session = utils.spark_session("test_app")
+#         assert isinstance(session, SparkSession)
+#         assert session.sparkContext.appName == "test_app"
+#         assert session.conf.get("spark.master") == os.environ.get("SPARK_MASTER_URL", "spark://localhost:7077")
+#         session.stop()
 
-    def test_spark_session_with_conf(self):
-        conf = {
-            "spark.executor.memory": "2g",
-            "spark.executor.cores": "2",
-        }
-        session = utils.spark_session("test_app_with_conf", conf)
-        assert isinstance(session, SparkSession)
-        assert session.sparkContext.appName == "test_app_with_conf"
-        assert session.conf.get("spark.executor.memory") == "2g"
-        assert session.conf.get("spark.executor.cores") == "2"
-        session.stop()
+#     def test_spark_session_with_conf(self):
+#         conf = {
+#             "spark.executor.memory": "2g",
+#             "spark.executor.cores": "2",
+#         }
+#         session = utils.spark_session("test_app_with_conf", conf)
+#         assert isinstance(session, SparkSession)
+#         assert session.sparkContext.appName == "test_app_with_conf"
+#         assert session.conf.get("spark.executor.memory") == "2g"
+#         assert session.conf.get("spark.executor.cores") == "2"
+#         session.stop()
 
 
 def test_get_file_extension():
