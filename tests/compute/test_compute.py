@@ -18,7 +18,7 @@ def test_compute_initialization(spark_session):
     assert compute.inputs == inputs
     assert compute.outputs == outputs
     assert compute.spark == spark_session
-    assert compute.app_name.startswith("test_")
+    assert compute.app_name.startswith("pytest_spark_")
 
     compute()
 

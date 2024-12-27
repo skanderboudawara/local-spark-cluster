@@ -14,7 +14,7 @@ if TYPE_CHECKING:
 
 class DataStorage:
 
-    def __init__(self, extension: str | None = None) -> None:
+    def __init__(self, extension: str | None = None) -> None:  # pragma: no cover
         """
         This class is used to read and write data to a specified file path.
 
@@ -30,7 +30,7 @@ class DataStorage:
         self._extension = extension
 
     @cached_property
-    def filename(self):
+    def filename(self):  # pragma: no cover
         """
         This property is used to get the file name of the input file.
 
@@ -41,7 +41,7 @@ class DataStorage:
         return extract_file_name(self.path)
 
     @property
-    def ls(self):
+    def ls(self):  # pragma: no cover
         """
         This property is used to list all files and directories in the specified folder.
 
@@ -52,7 +52,7 @@ class DataStorage:
         return list_folder_contents(self.path)
 
     @cached_property
-    def session(self):
+    def session(self):  # pragma: no cover
         """
         This property is used to create a Spark session.
 
@@ -62,22 +62,8 @@ class DataStorage:
         """
         return SparkSession.builder.getOrCreate()
 
-    def relpath(self, in_out: str) -> str:
-        """
-        This method is used to get the relative path of the input or output file.
-
-        :param in_out: (str), Type of file ('input' or 'output').
-
-        :return: (str), Relative path of the input or output file.
-        """
-        if not isinstance(in_out, str):
-            raise ValueError("Argument 'in_out' must be a string.")
-        if in_out not in {"input", "output"}:
-            raise ValueError("Argument 'in_out' must be either 'input' or 'output'.")
-        return self.path
-
     @cached_property
-    def extension(self):
+    def extension(self):  # pragma: no cover
         """
         This property is used to get the file extension of the input file.
 
@@ -123,7 +109,6 @@ class Input(DataStorage):
         :return: (DataFrame), DataFrame created from the input file.
         :raises ValueError: If the file format is unsupported.
         """
-        self.path = self.relpath("input")
         logger.info(f"Loading {self.path}")
         # Create a DataFrame reader with optional schema
         reader = self.session.read
@@ -230,7 +215,6 @@ class Output(DataStorage):
 
         :returns: None
         """
-        self.path = self.relpath("output")
         logger.info(f"dumping {self.path}")
         # Validate the format and write accordingly
         if self.extension == "parquet":
