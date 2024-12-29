@@ -8,10 +8,6 @@ This script is a template for creating a Spark job using PySpark. It demonstrate
 5. Display the first three rows of the DataFrame.
 6. Stop the Spark session.
 """
-import sys
-
-sys.path.append("src/")
-
 from pyspark.sql.functions import rand
 
 from spark_session import get_spark_session

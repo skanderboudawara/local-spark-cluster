@@ -1,3 +1,18 @@
+[project]
+name="compute"
+version="0.0.1"
+dependencies = [
+    "ruff",
+    "pyspark",
+    "pytest",
+    "pytest-cov",
+    "tomli"
+]
+
+[build-system]
+requires = ["setuptools", "wheel"]
+build-backend = "setuptools.build_meta"
+
 [tool.coverage.run]
 omit = [
     "*/__init__.py",

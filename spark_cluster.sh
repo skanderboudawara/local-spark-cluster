@@ -47,6 +47,20 @@ run() {
     fi
 }
 
+venv() {
+    echo "Setting up Python environment..."
+    python -m venv .venv
+    source .venv/bin/activate
+    pip install -e .
+    if [ $? -eq 0 ]; then
+        echo "✅ Python environment successfully set up!"
+    else
+        echo "❌ Failed to set up Python environment." >&2
+        exit 1
+    fi
+    deactivate
+}
+
 # Check for command line arguments
 if [ "$#" -lt 1 ]; then
     echo "Usage: $0 {deploy|stop|status|run|}"
@@ -67,6 +81,9 @@ case "$1" in
     run)
         shift
         run "$@"
+        ;;
+    venv)
+        venv
         ;;
     *)
         echo "Invalid command. Use deploy, run, or test."

@@ -24,7 +24,4 @@ def spark_session() -> Generator[SparkSession, None, None]:
         .config("spark.executor.memory", "1g") \
         .getOrCreate()
     yield spark
-    try:
-        spark.stop()
-    except:
-        print("spark is stopped")
+    spark.stop()

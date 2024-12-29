@@ -20,11 +20,6 @@ Usage:
     6. Display the resulting DataFrame.
     7. Write the resulting DataFrame to a Parquet file.
 """
-
-import sys
-
-sys.path.append("src/")
-
 from pyspark.sql import DataFrame, SparkSession
 from pyspark.sql.functions import avg, col, lag
 from pyspark.sql.types import FloatType, IntegerType, StructField, StructType
