@@ -1,0 +1,192 @@
+[project]
+name="src"
+version="0.0.1"
+dependencies = [
+    "mypy",
+    "ruff",
+    "pyspark",
+    "pytest",
+    "pytest-cov",
+    "tomli"
+]
+
+[build-system]
+requires = ["setuptools", "wheel"]
+build-backend = "setuptools.build_meta"
+
+
+[tool.coverage.run]
+omit = [
+    "*/__init__.py",
+    "*/test_*",
+]
+
+[tool.pytest.ini_options]
+addopts = [
+    "-vv",
+    "-p",
+    "no:warnings",
+    "--cov=src",
+    "--cov-report=term-missing",
+    "--cov-fail-under=50"
+]
+pythonpath = [
+    "src"
+]
+paths = [
+    "tests"
+]
+python_files = [
+    "tests.py",
+    "*_tests.py",
+    "test_*.py"
+]
+log_cli = true
+log_cli_level = "INFO"
+log_level = "INFO"
+log_format = "%(asctime)s %(levelname)s %(message)s"
+log_date_format = "%Y-%m-%d %H:%M:%S"
+
+[tool.ruff]
+lint.select = [
+    "F",
+    "E",
+    "W",
+    "C90",
+    "I",
+    "N",
+    "B",
+    "Q",
+    "D",
+    "UP",
+    "ANN",
+    "S",
+    "B",
+    "A",
+    "COM",
+    "C4",
+    "DTZ",
+    "FA",
+    "ISC",
+    "ICN",
+    "LOG",
+    "G",
+    "INP",
+    "T20",
+    "PYI",
+    "PT",
+    "Q",
+    "RSE",
+    "RET",
+    "SLF",
+    "SLOT",
+    "SIM",
+    "TCH",
+    "INT",
+    "ARG",
+    "TD",
+    "FIX",
+    "ERA",
+    "PL",
+    "PERF",
+    "RUF"
+]
+lint.ignore = [
+    "A002",
+    "N812",
+    "FA100",
+    "E203",
+    "E202",
+    "D200",
+    "D404",
+    "D104",
+    "D212",
+    "D415",
+    "PLR0913",
+    "D107",
+    "B023",
+    "RET504",
+    "E271",
+    "PLR0917",
+    "PLR6301",
+    "PLR0904",
+    "E241",
+    "PLR0915",
+    "PLR0914",
+    "C901",
+    "PLR0912",
+    "PLR0911",
+    "PLC0206",
+    "PLC2701",
+    "ANN401"
+]
+exclude = [
+    "*setup.py",
+    ".*validator.py",
+    "*tests*",
+]
+output-format = "grouped"
+preview = true
+fix = true
+lint.fixable = [
+    "ALL"
+]
+lint.unfixable = []
+show-fixes = true
+line-length = 100
+
+[tool.ruff.format]
+indent-style = "space"
+quote-style = "double"
+line-ending = "auto"
+
+[tool.ruff.lint.flake8-quotes]
+docstring-quotes = "double"
+inline-quotes = "double"
+multiline-quotes = "double"
+
+[tool.ruff.lint.pydocstyle]
+convention = "google"
+
+[tool.ruff.lint.isort]
+split-on-trailing-comma = true
+default-section = "third-party"
+section-order = [
+    "future",
+    "standard-library",
+    "third-party",
+    "first-party",
+    "local-folder"
+]
+from-first = false
+lines-between-types = 0
+known-third-party = [
+    "pyspark"
+]
+known-local-folder = [
+    "src"
+]
+
+[tool.mypy]
+# Specify additional paths to search for modules
+mypy_path = "src"
+
+# Enable strict type checking
+strict = false
+
+# Exclude certain directories from type checking (e.g., build, dist, migrations)
+exclude = [
+    "(^|/)(test.*)$",
+    ".*sandbox.*",
+    "(^|/)(__init__/.py)$",
+    ".*jobs.*"
+]
+
+pretty=true
+error_summary = false
+disallow_any_generics = false
+
+# Ignore missing imports for pyspark
+[[tool.mypy.overrides]]
+module = "pyspark.*"
+ignore_missing_imports = true

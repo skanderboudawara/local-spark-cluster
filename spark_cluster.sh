@@ -4,9 +4,9 @@ BASE_PATH="//src/scripts"
 
 deploy() {
     echo "Deploying the Spark cluster..."
-    docker-compose up -d --build
+    docker compose up -d --build
     if [ $? -eq 0 ]; then
-        echo "✅ Spark cluster successfuly deployed!"
+        echo "✅ Spark cluster successfully deployed!"
     else
         echo "❌ Failed to deploy the Spark cluster." >&2
         exit 1
@@ -15,9 +15,9 @@ deploy() {
 
 stop() {
     echo "Stopping the Spark cluster..."
-    docker-compose down
+    docker compose down
     if [ $? -eq 0 ]; then
-        echo "✅ Spark cluster successfuly stopped!"
+        echo "✅ Spark cluster successfully stopped!"
     else
         echo "❌ Failed to stop the Spark cluster." >&2
         exit 1
@@ -27,7 +27,7 @@ stop() {
 
 status() {
     echo "Checking Spark cluster status..."
-    docker-compose ps
+    docker compose ps
     exit /b
 }
 
@@ -45,6 +45,20 @@ run() {
         echo "❌ Failed to execute Spark job: $1" >&2
         exit 1
     fi
+}
+
+venv() {
+    echo "Setting up Python environment..."
+    python -m venv .venv
+    source .venv/bin/activate
+    pip install -e .
+    if [ $? -eq 0 ]; then
+        echo "✅ Python environment successfully set up!"
+    else
+        echo "❌ Failed to set up Python environment." >&2
+        exit 1
+    fi
+    deactivate
 }
 
 # Check for command line arguments
@@ -67,6 +81,9 @@ case "$1" in
     run)
         shift
         run "$@"
+        ;;
+    venv)
+        venv
         ;;
     *)
         echo "Invalid command. Use deploy, run, or test."
