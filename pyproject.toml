@@ -1,5 +1,5 @@
 [project]
-name="compute"
+name="src"
 version="0.0.1"
 dependencies = [
     "mypy",
