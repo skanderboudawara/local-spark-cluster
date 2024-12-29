@@ -1,0 +1,61 @@
+{
+  "name": "spark-job-submit",
+  "displayName": "spark job submit",
+  "description": "to submit a spark job into the docker container",
+  "version": "0.0.1",
+  "icon": "spark.png",
+  "engines": {
+    "vscode": "^1.96.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "activationEvents": [],
+  "main": "./out/extension.js",
+  "contributes": {
+    "configuration": {
+      "type": "object",
+      "properties": {
+        "sparkJobSubmit.dockerClusterName": {
+          "type": "string",
+          "description": "The name of the Docker cluster to use for Spark jobs."
+        }
+      }
+    },
+    "commands": [
+      {
+        "command": "spark-job-submit.submitjob",
+        "title": "▶ Build"
+      }
+    ],
+    "menus": {
+      "editor/title": [
+        {
+          "command": "spark-job-submit.submitjob",
+          "when": "editorLangId == python",
+          "group": "navigation"
+        }
+      ]
+    }
+
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "pretest": "npm run compile && npm run lint",
+    "lint": "eslint src",
+    "test": "vscode-test"
+  },
+  "devDependencies": {
+    "@types/vscode": "^1.96.0",
+    "@types/mocha": "^10.0.10",
+    "@types/node": "20.x",
+    "@typescript-eslint/eslint-plugin": "^8.17.0",
+    "@typescript-eslint/parser": "^8.17.0",
+    "eslint": "^9.16.0",
+    "typescript": "^5.7.2",
+    "@vscode/test-cli": "^0.0.10",
+    "@vscode/test-electron": "^2.4.1"
+  }
+}
