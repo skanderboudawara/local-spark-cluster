@@ -5,7 +5,7 @@ from typing import TYPE_CHECKING
 
 from pyspark.sql import DataFrame, DataFrameWriter, SparkSession
 
-from compute._logger import logger
+from compute._logger import run_logger
 from compute._utils import extract_file_name, get_file_extension, list_folder_contents, sanitize_columns
 
 if TYPE_CHECKING:
@@ -109,7 +109,7 @@ class Input(DataStorage):
         :return: (DataFrame), DataFrame created from the input file.
         :raises ValueError: If the file format is unsupported.
         """
-        logger.info(f"Loading {self.path}")
+        run_logger.info(f"Loading data from: {self.path}")
         # Create a DataFrame reader with optional schema
         reader = self.session.read
         if self.schema:
@@ -204,7 +204,7 @@ class Output(DataStorage):
             df = df.repartition(*partitionBy)
         writer = df.write.mode("overwrite")
         self.__dump_file(writer)
-        logger.info("file saved")
+        run_logger.info(f"file saved: {self.path}")
 
     def __dump_file(self, writer: DataFrameWriter) -> None:
         """
@@ -215,7 +215,7 @@ class Output(DataStorage):
 
         :returns: None
         """
-        logger.info(f"dumping {self.path}")
+        run_logger.info(f"dumping data to: {self.path}")
         # Validate the format and write accordingly
         if self.extension == "parquet":
             writer.format(self.extension).save(self.path)

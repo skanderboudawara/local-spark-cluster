@@ -22,7 +22,7 @@ processed_df = spark_session.read_dataframe(
     "data/output/YourSparkApplicationName",
     file_extension="csv",
     header=True,
-    inferSchema=True
+    inferSchema=True,
 )
 
 # Show the first three rows of the DataFrame

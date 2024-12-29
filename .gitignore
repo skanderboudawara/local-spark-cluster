@@ -176,3 +176,4 @@ cython_debug/
 # Google App Engine generated folder
 appengine-generated/
 .vscode/settings.json
+src/jobs/sandbox.py

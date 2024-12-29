@@ -1,4 +1,5 @@
 import os
+from typing import Optional
 
 from pyspark.sql import DataFrame, SparkSession
 
@@ -54,7 +55,7 @@ def read_dataframe(spark_session: SparkSession, file_name: str, file_extension: 
     raise ValueError(f"Unsupported format: {file_extension}. Please choose 'csv', 'json', or 'parquet'.")
 
 
-def write_dataframe(df: DataFrame, format: str, custom_name: str=None) -> None:
+def write_dataframe(df: DataFrame, format: str, custom_name: Optional[str] = None) -> None:
     """
     This method writes the output DataFrame locally in the specified format (csv, json, or parquet).
 

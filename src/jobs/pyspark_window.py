@@ -2,13 +2,12 @@ import sys
 
 sys.path.append("src/")
 
-from pyspark.sql import DataFrame
+from pyspark.sql import DataFrame, SparkSession
 from pyspark.sql.functions import avg, col, lag
+from pyspark.sql.types import FloatType, IntegerType, StructField, StructType
 from pyspark.sql.window import Window
 
 from spark_session import get_spark_session
-from pyspark.sql import SparkSession
-from pyspark.sql.types import StructType, StructField, IntegerType, FloatType
 
 
 def fake_dataframe(spark: SparkSession) -> DataFrame:
@@ -16,7 +15,7 @@ def fake_dataframe(spark: SparkSession) -> DataFrame:
     schema = StructType([
         StructField("year", IntegerType(), True),
         StructField("quarter", IntegerType(), True),
-        StructField("revenue_rate", FloatType(), True)
+        StructField("revenue_rate", FloatType(), True),
     ])
 
     # Create data
@@ -28,13 +27,14 @@ def fake_dataframe(spark: SparkSession) -> DataFrame:
         (2021, 1, 110.0),
         (2021, 2, 160.0),
         (2021, 3, 210.0),
-        (2021, 4, 260.0)
+        (2021, 4, 260.0),
     ]
 
     # Create DataFrame
     df = spark.createDataFrame(data, schema)
 
     return df
+
 
 def do_exercice(df: DataFrame) -> DataFrame:
     # Define a window specification
@@ -71,7 +71,7 @@ df: DataFrame = spark_session.read_dataframe(
     "data/output/PysparkWindow/fake_data",
     file_extension="csv",
     header=True,
-    inferSchema=True
+    inferSchema=True,
 )
 
 # Apply exercice

@@ -3,7 +3,7 @@ import uuid
 from typing import Any, Callable, Optional
 
 from compute._dataset import Input, Output
-from compute._logger import logger
+from compute._logger import run_logger
 from compute._utils import spark_session
 
 
@@ -27,9 +27,9 @@ class Compute:
         self.compute_func = compute_func
         self.spark = params.get("spark", spark_session(f"master_{uuid.uuid4()!s}"))
         self.inputs = inputs or {}
-        logger.info("Inputs loaded via Compute class")
+        run_logger.info("Inputs loaded via Compute class")
         self.outputs = outputs or {}
-        logger.info("Outputs loaded via Compute class")
+        run_logger.info("Outputs loaded via Compute class")
 
         # Extract metadata from the compute function
         self._initialize_function(compute_func)
@@ -68,11 +68,12 @@ class Compute:
 
         :returns: Any
         """
-        logger.info("Compute.__call__ triggered")
+        run_logger.info(f"{self.compute_func.__name__} is being computed")
         if self._use_context:
             kwargs["spark"] = self.spark
         kwargs.update(self.inputs)
         kwargs.update(self.outputs)
         result = self.compute_func(*args, **kwargs)
+        run_logger.info(f"{self.compute_func.__name__} completed")
         self.spark.stop()
         return result

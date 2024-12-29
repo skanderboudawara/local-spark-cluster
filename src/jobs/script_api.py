@@ -6,10 +6,8 @@ import sys
 sys.path.append("src/")
 
 from pyspark.sql import DataFrame
-from pyspark.sql.functions import col, lit
 
-from compute._dataset import Input, Output
-from compute.decorators import cluster_conf, compute
+from compute import cluster_conf, compute, Input, Output
 
 
 @cluster_conf(app_name="select_col")
@@ -26,7 +24,6 @@ def compute_random(random: DataFrame, output: Output) -> None:
 
     :return: None
     """
-    print(random.path)
     random = random.dataframe()
 
     random.show()
