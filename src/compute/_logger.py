@@ -1,8 +1,9 @@
 import logging
 from logging.handlers import TimedRotatingFileHandler
 
+
 # Create and configure a named logger
-def setup_logger(name, log_file, level=logging.INFO):
+def setup_logger(name: str, log_file: str, level: int = logging.INFO) -> logging.Logger:
     logger = logging.getLogger(name)
     logger.setLevel(level)
 
@@ -11,7 +12,7 @@ def setup_logger(name, log_file, level=logging.INFO):
     console_handler = logging.StreamHandler()
 
     # Create formatters and add them to handlers
-    formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+    formatter = logging.Formatter("%(asctime)s - %(name)s - %(levelname)s - %(message)s")
     file_handler.setFormatter(formatter)
     console_handler.setFormatter(formatter)
 
@@ -21,6 +22,7 @@ def setup_logger(name, log_file, level=logging.INFO):
 
     return logger
 
+
 # Set up different named loggers
-run_logger = setup_logger('computeLogger', 'compute.log')
-db_logger = setup_logger('dbLogger', 'db.log', level=logging.DEBUG)
+run_logger = setup_logger("computeLogger", "compute.log")
+db_logger = setup_logger("dbLogger", "db.log", level=logging.DEBUG)

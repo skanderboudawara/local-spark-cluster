@@ -1,3 +1,26 @@
+"""
+This module contains functions to create a fake DataFrame and perform various window operations.
+
+Functions:
+    fake_dataframe(spark: SparkSession) -> DataFrame:
+        Creates a fake DataFrame with predefined schema and data.
+
+    do_exercice(df: DataFrame) -> DataFrame:
+        Performs window operations on the given DataFrame, including:
+        1. Calculating the rate change (difference between current and previous quarters' revenue).
+        2. Calculating the cumulative average within each year.
+        3. Calculating the moving average over the last two quarters (current and previous quarter).
+
+Usage:
+    1. Create a Spark session using `get_spark_session`.
+    2. Generate a fake DataFrame using `fake_dataframe`.
+    3. Write the fake DataFrame to a CSV file.
+    4. Read the DataFrame from the CSV file.
+    5. Apply the `do_exercice` function to perform window operations.
+    6. Display the resulting DataFrame.
+    7. Write the resulting DataFrame to a Parquet file.
+"""
+
 import sys
 
 sys.path.append("src/")
@@ -11,6 +34,14 @@ from spark_session import get_spark_session
 
 
 def fake_dataframe(spark: SparkSession) -> DataFrame:
+    """
+    This method is used to create a fake DataFrame with sample data.
+
+    :param spark: (SparkSession), object used to create the DataFrame.
+
+    :return: (DataFrame), A DataFrame containing sample data with columns 'year', 'quarter',
+        and 'revenue_rate'.
+    """
     # Define schema
     schema = StructType([
         StructField("year", IntegerType(), True),
@@ -37,6 +68,19 @@ def fake_dataframe(spark: SparkSession) -> DataFrame:
 
 
 def do_exercice(df: DataFrame) -> DataFrame:
+    """
+    Performs window operations on the given DataFrame, including:
+
+    1. Calculating the rate change (difference between current and previous quarters' revenue).
+    2. Calculating the cumulative average within each year.
+    3. Calculating the moving average over the last two quarters (current and previous quarter).
+
+    :param df: (DataFrame), The input DataFrame containing columns 'year', 'quarter',
+        and 'revenue_rate'.
+
+    :return: (DataFrame), A DataFrame with additional columns 'rate_change', 'cumulative_avg',
+        and 'moving_avg'.
+    """
     # Define a window specification
     # The window is partitioned by year and ordered by quarter
     w = Window.partitionBy("year").orderBy("quarter")

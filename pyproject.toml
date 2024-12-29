@@ -2,58 +2,133 @@
 omit = [
     "*/__init__.py",
     "*/test_*",
-    "*/_version.py",
-    "*/pipeline.py",
-    "*/config.py",
-    "*/__init__.py",
-    "*/old/*",
-    "_version.py"]
- 
+]
+
 [tool.pytest.ini_options]
-addopts = "-vv -p no:warnings --import-mode=append --cov=src --cov-report=term-missing --cov-fail-under=50"
-pythonpath = ["src"]
-testpaths = ["tests"]
-python_files = ["test_*.py"]
+addopts = [
+    "-vv",
+    "-p",
+    "no:warnings",
+    "--import-mode=append",
+    "--cov=src",
+    "--cov-report=term-missing",
+    "--cov-fail-under=50"
+]
+pythonpath = [
+    "src"
+]
+testpaths = [
+    "tests"
+]
+python_files = [
+    "test_*.py"
+]
 log_cli = true
 log_cli_level = "INFO"
 log_level = "INFO"
 log_format = "%(asctime)s %(levelname)s %(message)s"
 log_date_format = "%Y-%m-%d %H:%M:%S"
- 
+
 [tool.ruff]
 lint.select = [
-    "F", "E", "W", "C90", "I", "N", "B", "Q", "D", "UP", "ANN", "S", "B", "A", "COM",
-    "C4", "DTZ", "FA", "ISC", "ICN", "LOG", "G", "INP", "T20", "PYI", "PT", "Q", "RSE",
-    "RET", "SLF", "SLOT", "SIM", "TCH", "INT", "ARG", "TD", "FIX", "ERA", "PL", "PERF",
-    "RUF"]
+    "F",
+    "E",
+    "W",
+    "C90",
+    "I",
+    "N",
+    "B",
+    "Q",
+    "D",
+    "UP",
+    "ANN",
+    "S",
+    "B",
+    "A",
+    "COM",
+    "C4",
+    "DTZ",
+    "FA",
+    "ISC",
+    "ICN",
+    "LOG",
+    "G",
+    "INP",
+    "T20",
+    "PYI",
+    "PT",
+    "Q",
+    "RSE",
+    "RET",
+    "SLF",
+    "SLOT",
+    "SIM",
+    "TCH",
+    "INT",
+    "ARG",
+    "TD",
+    "FIX",
+    "ERA",
+    "PL",
+    "PERF",
+    "RUF"
+]
 lint.ignore = [
-    "A002", "N812", "FA100", "E203", "E202", "D200", "D404", "D104", "D212", "D415",
-    "PLR0913", "D107", "B023", "RET504", "E271", "PLR0917", "PLR6301", "PLR0904", "E241",
-    "PLR0915", "PLR0914", "C901", "PLR0912", "PLR0911", "PLC0206"]
+    "A002",
+    "N812",
+    "FA100",
+    "E203",
+    "E202",
+    "D200",
+    "D404",
+    "D104",
+    "D212",
+    "D415",
+    "PLR0913",
+    "D107",
+    "B023",
+    "RET504",
+    "E271",
+    "PLR0917",
+    "PLR6301",
+    "PLR0904",
+    "E241",
+    "PLR0915",
+    "PLR0914",
+    "C901",
+    "PLR0912",
+    "PLR0911",
+    "PLC0206",
+    "PLC2701",
+    "ANN401"
+]
 exclude = [
     "*setup.py",
-    "*pipeline.py"]
+    "tests"
+]
 output-format = "grouped"
 preview = true
 fix = true
-lint.fixable = ["ALL"]
+lint.fixable = [
+    "ALL"
+]
 lint.unfixable = []
 show-fixes = true
-line-length = 200
- 
+line-length = 100
+
 [tool.ruff.format]
 indent-style = "space"
 quote-style = "double"
 line-ending = "auto"
- 
+
 [tool.ruff.lint.flake8-quotes]
 docstring-quotes = "double"
 inline-quotes = "double"
 multiline-quotes = "double"
- 
+
 [tool.ruff.lint.pydocstyle]
 convention = "google"
- 
+
 [tool.ruff.lint.isort]
 split-on-trailing-comma = true
 default-section = "third-party"
@@ -62,14 +137,13 @@ section-order = [
     "standard-library",
     "third-party",
     "first-party",
-    "local-folder"]
+    "local-folder"
+]
 from-first = false
 lines-between-types = 0
-known-third-party = ["pyspark"]
-known-local-folder = ["src"]
- 
-[tool.ruff.lint.extend-per-file-ignores]
-"test_*.py" = [
-    "E501", "ANN001", "ARG0002", "D103", "PT001", "ARG001", "N803", "N802", "ANN201", "ANN202",
-    "ANN204", "D100", "RET504", "DTZ005", "DTZ007", "DTZ002", "N806", "DTZ001",
-    "PLR0914", "S101", "PT004", "ANN002", "ANN003", "ANN206", "N801", "ARG003", "E402", "SLF001", "PLC2701"]
+known-third-party = [
+    "pyspark"
+]
+known-local-folder = [
+    "src"
+]

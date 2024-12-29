@@ -1,3 +1,13 @@
+"""
+This script is a template for creating a Spark job using PySpark. It demonstrates how to:
+
+1. Initialize a Spark session.
+2. Create a DataFrame with random data.
+3. Save the DataFrame to a CSV file.
+4. Load the DataFrame from the CSV file.
+5. Display the first three rows of the DataFrame.
+6. Stop the Spark session.
+"""
 import sys
 
 sys.path.append("src/")

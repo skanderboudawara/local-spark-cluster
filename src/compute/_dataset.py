@@ -3,10 +3,15 @@ from __future__ import annotations
 from functools import cached_property
 from typing import TYPE_CHECKING
 
-from pyspark.sql import DataFrame, DataFrameWriter, SparkSession
+from pyspark.sql import DataFrame, DataFrameReader, DataFrameWriter, SparkSession
 
 from compute._logger import run_logger
-from compute._utils import extract_file_name, get_file_extension, list_folder_contents, sanitize_columns
+from compute._utils import (
+    extract_file_name,
+    get_file_extension,
+    list_folder_contents,
+    sanitize_columns,
+)
 
 if TYPE_CHECKING:
     from pyspark.sql.types import StructType
@@ -30,7 +35,7 @@ class DataStorage:
         self._extension = extension
 
     @cached_property
-    def filename(self):  # pragma: no cover
+    def filename(self) -> str:  # pragma: no cover
         """
         This property is used to get the file name of the input file.
 
@@ -41,7 +46,7 @@ class DataStorage:
         return extract_file_name(self.path)
 
     @property
-    def ls(self):  # pragma: no cover
+    def ls(self) -> list:  # pragma: no cover
         """
         This property is used to list all files and directories in the specified folder.
 
@@ -52,7 +57,7 @@ class DataStorage:
         return list_folder_contents(self.path)
 
     @cached_property
-    def session(self):  # pragma: no cover
+    def session(self) -> SparkSession:  # pragma: no cover
         """
         This property is used to create a Spark session.
 
@@ -63,7 +68,7 @@ class DataStorage:
         return SparkSession.builder.getOrCreate()
 
     @cached_property
-    def extension(self):  # pragma: no cover
+    def extension(self) -> str:  # pragma: no cover
         """
         This property is used to get the file extension of the input file.
 
@@ -119,7 +124,7 @@ class Input(DataStorage):
             raise ValueError(f"File '{self.path}' is empty.")
         return df
 
-    def __read_file(self, reader) -> DataFrame:
+    def __read_file(self, reader: DataFrameReader) -> DataFrame:
         """
         This method reads the input file based on the file extension.
 
@@ -135,7 +140,9 @@ class Input(DataStorage):
             return reader.json(self.path, **self.kwargs)
 
         # Raise error if the file format is unsupported
-        raise ValueError(f"Unsupported format: '{self.extension}'. Please choose 'csv', 'json', or 'parquet'.")
+        raise ValueError(
+            f"Unsupported format: '{self.extension}'. Please choose 'csv', 'json', or 'parquet'.",
+        )
 
 
 class Output(DataStorage):
@@ -156,7 +163,7 @@ class Output(DataStorage):
         branch = branch.lower().strip("/") if branch else branch
         self.path = f"{branch}/{path}" if branch else path
 
-    def append(self, df: DataFrame, partitionBy: int | str | list | None = None) -> None:
+    def append(self, df: DataFrame, partitionBy: int | str | list | None = None) -> None:  # noqa: N803
         """
         Writes the DataFrame to a local path in the specified format.
 
@@ -168,7 +175,7 @@ class Output(DataStorage):
         """
         self.__prepare_dump(df, "append", partitionBy)
 
-    def write(self, df: DataFrame, partitionBy: int | str | list | None = None) -> None:
+    def write(self, df: DataFrame, partitionBy: int | str | list | None = None) -> None:  # noqa: N803
         """
         Writes the DataFrame to a local path in the specified format.
 
@@ -180,7 +187,12 @@ class Output(DataStorage):
         """
         self.__prepare_dump(df, "overwrite", partitionBy)
 
-    def __prepare_dump(self, df: DataFrame, mode: str, partitionBy: int | str | list | None = None) -> None:
+    def __prepare_dump(
+        self,
+        df: DataFrame,
+        mode: str,
+        partitionBy: int | str | list | None = None,  # noqa: N803
+    ) -> None:
         """
         This method prepares the DataFrame for writing to a file.
 
@@ -200,7 +212,7 @@ class Output(DataStorage):
             raise ValueError("Argument 'partitionBy' must be an integer, string, list, or None.")
         df = sanitize_columns(df)
         if partitionBy:
-            partitionBy = partitionBy if isinstance(partitionBy, list) else [partitionBy]
+            partitionBy = partitionBy if isinstance(partitionBy, list) else [partitionBy]  # noqa: N806
             df = df.repartition(*partitionBy)
         writer = df.write.mode("overwrite")
         self.__dump_file(writer)
@@ -226,4 +238,6 @@ class Output(DataStorage):
         if self.extension == "json":
             writer.format(self.extension).save(self.path)
             return
-        raise ValueError(f"Unsupported format: '{self.extension}'. Please choose 'csv', 'json', or 'parquet'.")
+        raise ValueError(
+            f"Unsupported format: '{self.extension}'. Please choose 'csv', 'json', or 'parquet'.",
+        )

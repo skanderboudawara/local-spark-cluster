@@ -62,7 +62,7 @@ def write_to_one_csv(path: str) -> None:
 
     :return: None
     """
-    os.system(f"cat {path}/*p*.csv >> {path}.csv")
+    os.system(f"cat {path}/*p*.csv >> {path}.csv")  # noqa: S605
     shutil.rmtree(path)
 
 

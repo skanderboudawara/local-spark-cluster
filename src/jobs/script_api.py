@@ -1,5 +1,5 @@
 """
-This transformation script reads a CSV file, selects a column, and writes the result to a new CSV file.
+This transformation script reads a CSV file, selects a column, writes the result to a new CSV file
 """
 import sys
 
@@ -7,7 +7,7 @@ sys.path.append("src/")
 
 from pyspark.sql import DataFrame
 
-from compute import cluster_conf, compute, Input, Output
+from compute import Input, Output, cluster_conf, compute
 
 
 @cluster_conf(app_name="select_col")
