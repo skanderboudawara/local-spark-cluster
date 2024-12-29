@@ -2,7 +2,6 @@
 name="src"
 version="0.0.1"
 dependencies = [
-    "pre-commit",
     "mypy",
     "ruff",
     "pyspark",
