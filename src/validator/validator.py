@@ -36,7 +36,6 @@ class Validator:
         else:
             raise ValueError("Invalid strategy.")
 
-    @staticmethod
     def _check_failure(self, df: DataFrame, msg: str, strategy: str) -> None:
         """
         This method is used to check if the DataFrame is empty.
@@ -47,7 +46,6 @@ class Validator:
         if not df.isEmpty():
             self._print_or_raise(msg, strategy)
 
-    @staticmethod
     def _condition_failure(self, condition: bool, msg: str, strategy: str) -> None:
         if not isinstance(condition, bool):
             raise ValueError("Argument 'condition' must be a boolean.")

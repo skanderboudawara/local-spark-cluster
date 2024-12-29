@@ -1,12 +1,13 @@
 import logging
-from .decorators import compute, cluster_conf
+
 from ._dataset import Input, Output
+from .decorators import cluster_conf, compute
 
 __all__ = [
-    'compute',
-    'cluster_conf',
-    'Input',
-    'Output',
+    "Input",
+    "Output",
+    "cluster_conf",
+    "compute",
 ]
 
 

@@ -1,12 +1,22 @@
+"""
+This module provides utility functions to create a Spark session and read/write DataFrames.
+
+Functions:
+- get_spark_session: Creates and returns a new Spark session configured to run locally in
+    docker containers.
+- read_dataframe: Reads input data into a DataFrame from a file.
+- write_dataframe: Writes the output DataFrame locally in the specified format.
+"""
+
 import os
-from typing import Optional
+from typing import Any, Optional
 
 from pyspark.sql import DataFrame, SparkSession
 
 
 def get_spark_session(app_name: str) -> SparkSession:
     """
-    This method creates and returns a new spark session configured to run localy in docker containers.
+    This method creates and returns a new spark session configured to run locally in docker
 
     :param app_name: (str), Name of the application
 
@@ -22,7 +32,12 @@ def get_spark_session(app_name: str) -> SparkSession:
         .getOrCreate()
 
 
-def read_dataframe(spark_session: SparkSession, file_name: str, file_extension: str, **kwargs) -> DataFrame:
+def read_dataframe(
+    spark_session: SparkSession,
+    file_name: str,
+    file_extension: str,
+    **kwargs: Any,
+) -> DataFrame:
     """
     This method reads input data into a DataFrame from a file.
 
@@ -52,7 +67,9 @@ def read_dataframe(spark_session: SparkSession, file_name: str, file_extension: 
         return spark_session.read.csv(file_name, **kwargs)
     if file_extension == "json":
         return spark_session.read.json(file_name, **kwargs)
-    raise ValueError(f"Unsupported format: {file_extension}. Please choose 'csv', 'json', or 'parquet'.")
+    raise ValueError(
+        f"Unsupported format: {file_extension}. Please choose 'csv', 'json', or 'parquet'.",
+    )
 
 
 def write_dataframe(df: DataFrame, format: str, custom_name: Optional[str] = None) -> None:
@@ -81,7 +98,9 @@ def write_dataframe(df: DataFrame, format: str, custom_name: Optional[str] = Non
     elif format == "json":
         df.write.mode("overwrite").json(full_output_path)
     else:
-        raise ValueError(f"Unsupported format: {format}. Please choose 'csv', 'json', or 'parquet'.")
+        raise ValueError(
+            f"Unsupported format: {format}. Please choose 'csv', 'json', or 'parquet'.",
+        )
 
 
 DataFrame.write_dataframe = write_dataframe

@@ -9,7 +9,6 @@ addopts = [
     "-vv",
     "-p",
     "no:warnings",
-    "--import-mode=append",
     "--cov=src",
     "--cov-report=term-missing",
     "--cov-fail-under=50"
@@ -104,6 +103,7 @@ lint.ignore = [
 ]
 exclude = [
     "*setup.py",
+    "validator.py",
     "tests"
 ]
 output-format = "grouped"

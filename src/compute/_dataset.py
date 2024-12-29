@@ -13,7 +13,7 @@ from compute._utils import (
     sanitize_columns,
 )
 
-if TYPE_CHECKING:
+if TYPE_CHECKING:  # pragma: no cover
     from pyspark.sql.types import StructType
 
 
