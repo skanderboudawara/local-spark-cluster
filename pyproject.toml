@@ -10,8 +10,8 @@ omit = [
     "_version.py"]
  
 [tool.pytest.ini_options]
-addopts = "-vv -p no:warnings --import-mode=append --cov=src --cov-report=term-missing --cov-fail-under=0"
-pythonpath = [".", "src"]
+addopts = "-vv -p no:warnings --import-mode=append --cov=src --cov-report=term-missing --cov-fail-under=50"
+pythonpath = ["src"]
 testpaths = ["tests"]
 python_files = ["test_*.py"]
 log_cli = true
