@@ -319,3 +319,4 @@ dist
 .yarn/install-state.gz
 .pnp.*
 .vscode/settings.json
+tests/test_sandbox.py

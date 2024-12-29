@@ -10,7 +10,7 @@ This script is a template for creating a Spark job using PySpark. It demonstrate
 """
 from pyspark.sql.functions import rand
 
-from spark_session import get_spark_session
+from utils import get_spark_session
 
 app_name = "YourSparkApplicationName"
 spark_session = get_spark_session(app_name)

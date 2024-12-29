@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from functools import cached_property
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Any
 
 from pyspark.sql import DataFrame, DataFrameReader, DataFrameWriter, SparkSession
 
@@ -19,7 +19,7 @@ if TYPE_CHECKING:  # pragma: no cover
 
 class DataStorage:
 
-    def __init__(self, extension: str | None = None) -> None:  # pragma: no cover
+    def __init__(self, path: str, extension: str | None = None) -> None:  # pragma: no cover
         """
         This class is used to read and write data to a specified file path.
 
@@ -28,14 +28,17 @@ class DataStorage:
 
         :returns: None
         """
+        if not isinstance(path, str):
+            raise TypeError("path must be a string")
         if not isinstance(extension, (str, type(None))):
-            raise ValueError("Argument 'extension' must be a string.")
+            raise TypeError("Argument 'extension' must be a string.")
         if extension and extension not in {"csv", "json", "parquet"}:
             raise ValueError("Argument 'extension' must be either 'csv', 'json', or 'parquet'.")
         self._extension = extension
+        self.path = path
 
     @cached_property
-    def filename(self) -> str:  # pragma: no cover
+    def filename(self) -> str | None:  # pragma: no cover
         """
         This property is used to get the file name of the input file.
 
@@ -68,7 +71,7 @@ class DataStorage:
         return SparkSession.builder.getOrCreate()
 
     @cached_property
-    def extension(self) -> str:  # pragma: no cover
+    def extension(self) -> str | None:  # pragma: no cover
         """
         This property is used to get the file extension of the input file.
 
@@ -83,25 +86,21 @@ class Input(DataStorage):
     def __init__(
         self,
         path: str,
-        branch: str | None = None,
         schema: StructType | None = None,
         extension: str | None = None,
-        **kwargs: dict | None,
+        **kwargs: Any,
     ) -> None:
         """
         This class is used to read data from a specified file path.
 
         :param path: (str), Path to the input file.
         :param schema: (StructType), Schema of the input data.
-        :param branch: (str), Branch name for the input file. (default: None)
         :param extension: (str), File extension ('csv', 'json', or 'parquet'). (default: None)
         :param kwargs: (dict), Additional keyword arguments for reading the file.
 
         :returns: None
         """
-        super().__init__(extension=extension)
-        branch = branch.lower().strip("/") if branch else branch
-        self.path = f"{branch}/{path}" if branch else path
+        super().__init__(path=path, extension=extension)
         self.schema = schema
         self.kwargs = kwargs
 
@@ -149,7 +148,6 @@ class Output(DataStorage):
     def __init__(
         self,
         path: str,
-        branch: str | None = None,
         extension: str | None = None,
     ) -> None:
         """
@@ -159,9 +157,7 @@ class Output(DataStorage):
 
         :returns: None
         """
-        super().__init__(extension=extension)
-        branch = branch.lower().strip("/") if branch else branch
-        self.path = f"{branch}/{path}" if branch else path
+        super().__init__(path=path, extension=extension)
 
     def append(self, df: DataFrame, partitionBy: int | str | list | None = None) -> None:  # noqa: N803
         """

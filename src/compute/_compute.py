@@ -4,7 +4,7 @@ from typing import Any, Callable, Optional
 
 from compute._dataset import Input, Output
 from compute._logger import run_logger
-from compute._utils import spark_session
+from compute.session import session
 
 
 class Compute:
@@ -24,8 +24,9 @@ class Compute:
 
         :returns: None
         """
+        params = {} if params is None else params
         self.compute_func = compute_func
-        self.spark = params.get("spark", spark_session(f"master_{uuid.uuid4()!s}"))
+        self.spark = params.get("spark", session(f"master_{uuid.uuid4()!s}"))
         self.inputs = inputs or {}
         run_logger.info("Inputs loaded via Compute class")
         self.outputs = outputs or {}
@@ -35,7 +36,7 @@ class Compute:
         self._initialize_function(compute_func)
 
     @property
-    def app_name(self) -> str:
+    def app_name(self) -> Any:
         """
         This property returns the name of the Spark application.
 

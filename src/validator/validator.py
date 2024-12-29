@@ -1,3 +1,4 @@
+from typing import Any
 from pyspark.sql import DataFrame
 from pyspark.sql.functions import col
 
@@ -6,7 +7,7 @@ class Validator:
     def __init__(self, dataframe: DataFrame) -> None:
         self._dataframe = dataframe
 
-    def __getattr__(self, name):
+    def __getattr__(self, name: str) -> Any:
         """
         Delegate attribute access to the underlying DataFrame.
         """
@@ -53,7 +54,7 @@ class Validator:
         if condition:
             self._print_or_raise(msg, strategy)
 
-    def checkPrimaryKey(self, strategy: str, *args):
+    def checkPrimaryKey(self, strategy: str, *args: Any) -> "Validator":
         """
         Checks if the given columns form a valid primary key (no duplicates or null values).
         """
@@ -70,7 +71,7 @@ class Validator:
         )
         return self
 
-    def checkRegexCol(self, colB: str, pattern: str, strategy: str):
+    def checkRegexCol(self, colB: str, pattern: str, strategy: str)-> "Validator":
         """
         Checks if all values in the given column match the provided regex pattern.
         """
@@ -83,7 +84,7 @@ class Validator:
 
         return self
 
-    def checkEqualityCol(self, colA: str, colB: str, strategy: str):
+    def checkEqualityCol(self, colA: str, colB: str, strategy: str) -> "Validator":
         """
         Checks if all values in the given column match the provided regex pattern.
         """
@@ -95,7 +96,7 @@ class Validator:
         )
         return self
 
-    def checkCount(self, row_count: int, strategy: str):
+    def checkCount(self, row_count: int, strategy: str) -> "Validator":
         """
         Checks if all values in the given column match the provided regex pattern.
         """
@@ -109,7 +110,7 @@ class Validator:
 
 
 # Adding a property to PySpark DataFrame to enable the validator
-def validator(self):
+def validator(self: DataFrame) -> Validator:
     return Validator(self)
 
 

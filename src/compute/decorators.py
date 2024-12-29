@@ -14,10 +14,11 @@ from typing import Any, Callable
 from compute._compute import Compute
 from compute._dataset import Input, Output
 from compute._logger import run_logger
-from compute._utils import filter_kwargs, spark_session
+from compute._utils import filter_kwargs
+from compute.session import session
 
 
-def compute(**compute_dict: dict[str, Input | Output | Any]) -> Callable:
+def compute(**compute_dict: Input | Output) -> Callable[..., Any]:
     """
     This decorator is used to define a compute task with inputs and outputs.
 
@@ -25,7 +26,7 @@ def compute(**compute_dict: dict[str, Input | Output | Any]) -> Callable:
 
     :returns: (Callable), Decorator function.
     """
-    def wrapper(compute_func: Callable) -> Callable:
+    def wrapper(compute_func: Callable) -> Callable[..., Any]:
         @wraps(compute_func)  # Preserve original function metadata
         def wrapped_func(*_: Any, **f_kwargs: Any) -> Any:
             filtered_inputs = filter_kwargs(compute_dict, Input)
@@ -42,7 +43,7 @@ def compute(**compute_dict: dict[str, Input | Output | Any]) -> Callable:
     return wrapper
 
 
-def cluster_conf(app_name : str | None = None, conf: dict | None = None) -> Callable:
+def cluster_conf(app_name : str | None = None, conf: dict | None = None) -> Callable[..., Any]:
     """
     This decorator is used to configure the Spark session and provide it to the wrapped function.
 
@@ -54,13 +55,13 @@ def cluster_conf(app_name : str | None = None, conf: dict | None = None) -> Call
     if app_name is None:
         app_name = f"master_{uuid.uuid4()!s}"
 
-    def wrapper(func: Callable) -> Callable:
+    def wrapper(func: Callable) -> Callable[..., Any]:
         @wraps(func)  # Preserve original function metadata
         def wrapped_func(*args: Any, **kwargs: Any) -> Any:
             # Initialize the Spark session
-            spark = spark_session(app_name, conf)
+            spark = session(app_name, conf)
             spark.sparkContext.setLogLevel("WARN")
-            kwargs["spark"] = spark_session(app_name, conf)
+            kwargs["spark"] = session(app_name, conf)
             # Call the wrapped function with the Spark session
             result = func(*args, **kwargs)
             return result

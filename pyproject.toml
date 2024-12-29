@@ -2,6 +2,7 @@
 name="compute"
 version="0.0.1"
 dependencies = [
+    "mypy",
     "ruff",
     "pyspark",
     "pytest",
@@ -12,6 +13,7 @@ dependencies = [
 [build-system]
 requires = ["setuptools", "wheel"]
 build-backend = "setuptools.build_meta"
+
 
 [tool.coverage.run]
 omit = [
@@ -31,10 +33,12 @@ addopts = [
 pythonpath = [
     "src"
 ]
-testpaths = [
+paths = [
     "tests"
 ]
 python_files = [
+    "tests.py",
+    "*_tests.py",
     "test_*.py"
 ]
 log_cli = true
@@ -162,3 +166,23 @@ known-third-party = [
 known-local-folder = [
     "src"
 ]
+
+[tool.mypy]
+# Specify additional paths to search for modules
+mypy_path = "src"
+
+# Enable strict type checking
+strict = true
+
+# Exclude certain directories from type checking (e.g., build, dist, migrations)
+exclude = [
+    "(^|/)(__init__.py|test.*)$",
+    ".*sandbox.*",
+]
+
+disallow_any_generics = false
+
+# Ignore missing imports for pyspark
+[[tool.mypy.overrides]]
+module = "pyspark.*"
+ignore_missing_imports = true

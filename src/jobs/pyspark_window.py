@@ -25,7 +25,7 @@ from pyspark.sql.functions import avg, col, lag
 from pyspark.sql.types import FloatType, IntegerType, StructField, StructType
 from pyspark.sql.window import Window
 
-from spark_session import get_spark_session
+from utils import get_spark_session
 
 
 def fake_dataframe(spark: SparkSession) -> DataFrame:

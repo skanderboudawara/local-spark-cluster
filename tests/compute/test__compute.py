@@ -1,6 +1,6 @@
 
 
-import src.compute._compute as C
+import compute._compute as C
 
 def dummy_compute_func(spark, input1, input2, output1):
     return input1 + input2

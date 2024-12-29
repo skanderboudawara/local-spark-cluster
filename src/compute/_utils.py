@@ -1,11 +1,11 @@
+from __future__ import annotations
+
 import os
 import re
-import shutil
-from typing import Any, Optional
+from typing import TYPE_CHECKING, Any
 
-from pyspark.sql import DataFrame, SparkSession
-
-NON_ALPHA_NUMERIC = r"[^a-zA-Z0-9_]+"
+if TYPE_CHECKING:
+    from pyspark.sql import DataFrame
 
 
 def filter_kwargs(kwargs: dict, type: Any) -> dict:
@@ -20,28 +20,7 @@ def filter_kwargs(kwargs: dict, type: Any) -> dict:
     return {k: v for k, v in kwargs.items() if isinstance(v, type)}
 
 
-def spark_session(app_name: str, conf: Optional[dict] = None) -> SparkSession:
-    """
-    This function is used to create a Spark session with the provided configuration.
-
-    :param app_name: (str), Name of the Spark application.
-    :param conf: (dict), Configuration options for the Spark session.
-
-    :returns: (SparkSession), Spark session instance.
-    """
-    default_session = SparkSession.builder \
-        .appName(app_name) \
-        .master(os.environ.get("SPARK_MASTER_URL", "local")) \
-        .config("spark.eventLog.enabled", "false") \
-        .config("spark.ui.showConsoleProgress", "false") \
-        .config("spark.eventLog.dir", "file:///opt/spark/work-dir/spark-events") \
-        .config("spark.default.output.path", "/opt/bitnami/spark") \
-        .config("spark.default.input.path", "/opt/bitnami/spark")
-    session = default_session.config(map=conf) if conf else default_session
-    return session.getOrCreate()
-
-
-def get_file_extension(path: str) -> str:
+def get_file_extension(path: str) -> str | None:
     """
     This property is used to get the file extension of the input file.
 
@@ -54,18 +33,6 @@ def get_file_extension(path: str) -> str:
     return None
 
 
-def write_to_one_csv(path: str) -> None:
-    """
-    This function is used to write the contents of multiple CSV files into a single CSV file.
-
-    :param path: (str), Path to the folder containing the CSV files.
-
-    :return: None
-    """
-    os.system(f"cat {path}/*p*.csv >> {path}.csv")  # noqa: S605
-    shutil.rmtree(path)
-
-
 def sanitize_columns(df: DataFrame) -> DataFrame:
     """
     This function is used to sanitize the column names of a DataFrame.
@@ -74,11 +41,11 @@ def sanitize_columns(df: DataFrame) -> DataFrame:
 
     :return: (DataFrame), v DataFrame.
     """
-    df = df.toDF(*[re.sub(NON_ALPHA_NUMERIC, "_", c) for c in df.columns])
+    df = df.toDF(*[re.sub(r"[^a-zA-Z0-9_]+", "_", c) for c in df.columns])
     return df
 
 
-def extract_file_name(path: str) -> str:
+def extract_file_name(path: str) -> str | None:
     """
     This function extracts the file name from the provided path.
 
@@ -86,7 +53,6 @@ def extract_file_name(path: str) -> str:
 
     :return: (str), File name.
     """
-    # Regex to match the file name dynamically
     match = re.search(r"/?([^/]+?)(\.[^/.]+)?$", path)
     return match.group(1) if match else None
 

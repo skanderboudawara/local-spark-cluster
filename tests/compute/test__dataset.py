@@ -1,6 +1,6 @@
 import pytest
 
-import src.compute._dataset as D
+import compute._dataset as D
 from pyspark.sql.types import StructField, StructType, IntegerType, StringType
 
 def test_Input_dataframe(monkeypatch, spark_session):
