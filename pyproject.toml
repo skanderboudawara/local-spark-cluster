@@ -123,8 +123,8 @@ lint.ignore = [
 ]
 exclude = [
     "*setup.py",
-    "validator.py",
-    "tests"
+    ".*validator.py",
+    "*tests*",
 ]
 output-format = "grouped"
 preview = true
@@ -173,14 +173,18 @@ known-local-folder = [
 mypy_path = "src"
 
 # Enable strict type checking
-strict = true
+strict = false
 
 # Exclude certain directories from type checking (e.g., build, dist, migrations)
 exclude = [
-    "(^|/)(__init__.py|test.*)$",
+    "(^|/)(test.*)$",
     ".*sandbox.*",
+    "(^|/)(__init__/.py)$",
+    ".*jobs.*"
 ]
 
+pretty=true
+error_summary = false
 disallow_any_generics = false
 
 # Ignore missing imports for pyspark

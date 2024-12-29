@@ -1,4 +1,5 @@
 from typing import Any
+
 from pyspark.sql import DataFrame
 from pyspark.sql.functions import col
 
@@ -71,7 +72,7 @@ class Validator:
         )
         return self
 
-    def checkRegexCol(self, colB: str, pattern: str, strategy: str)-> "Validator":
+    def checkRegexCol(self, colB: str, pattern: str, strategy: str) -> "Validator":
         """
         Checks if all values in the given column match the provided regex pattern.
         """
@@ -115,4 +116,4 @@ def validator(self: DataFrame) -> Validator:
 
 
 # Add the validator property to the DataFrame class
-DataFrame.validator = property(validator)
+DataFrame.validator = property(validator)  # type: ignore[attr-defined]

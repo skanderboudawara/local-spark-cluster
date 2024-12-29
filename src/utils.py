@@ -103,5 +103,5 @@ def write_dataframe(df: DataFrame, format: str, custom_name: Optional[str] = Non
         )
 
 
-DataFrame.write_dataframe = write_dataframe
-SparkSession.read_dataframe = read_dataframe
+DataFrame.write_dataframe = write_dataframe  # type: ignore[attr-defined]
+SparkSession.read_dataframe = read_dataframe  # type: ignore[attr-defined]

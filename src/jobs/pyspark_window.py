@@ -18,7 +18,7 @@ Usage:
     4. Read the DataFrame from the CSV file.
     5. Apply the `do_exercice` function to perform window operations.
     6. Display the resulting DataFrame.
-    7. Write the resulting DataFrame to a Parquet file.
+    7. Write the resulting DataFrame to a Parquet file
 """
 from pyspark.sql import DataFrame, SparkSession
 from pyspark.sql.functions import avg, col, lag
@@ -121,3 +121,5 @@ df.show()
 
 # Store output
 df.write_dataframe(format="parquet", custom_name="output")
+
+spark_session.stop()
