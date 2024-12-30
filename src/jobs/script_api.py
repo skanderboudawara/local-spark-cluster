@@ -8,8 +8,8 @@ from compute import Input, Output, cluster_conf, compute
 
 @cluster_conf(app_name="select_col")
 @compute(
-    random=Input("data/input/random_data.csv", header=True, inferSchema=True),
-    output=Output("data/output/selected_col2.csv"),
+    random=Input(path="data/input/random_data.csv", header=True, inferSchema=True),
+    output=Output(path="data/output/selected_col2.csv"),
 )
 def compute_random(random: DataFrame, output: Output) -> None:
     """
@@ -24,7 +24,7 @@ def compute_random(random: DataFrame, output: Output) -> None:
 
     random.show()
 
-    output.write(random)
+    output.write(df=random)
 
 
 if __name__ == "__main__":

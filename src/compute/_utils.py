@@ -28,9 +28,7 @@ def get_file_extension(path: str) -> str | None:
 
     :return: (str), File extension of the input file.
     """
-    if "." in path:
-        return path.split(".")[-1].lower()
-    return None
+    return path.split(sep=".")[-1].lower()
 
 
 def sanitize_columns(df: DataFrame) -> DataFrame:
@@ -41,7 +39,7 @@ def sanitize_columns(df: DataFrame) -> DataFrame:
 
     :return: (DataFrame), v DataFrame.
     """
-    df = df.toDF(*[re.sub(r"[^a-zA-Z0-9_]+", "_", c) for c in df.columns])
+    df = df.toDF(*[re.sub(pattern=r"[^a-zA-Z0-9_]+", repl="_", string=c) for c in df.columns])
     return df
 
 
@@ -53,7 +51,7 @@ def extract_file_name(path: str) -> str | None:
 
     :return: (str), File name.
     """
-    match = re.search(r"/?([^/]+?)(\.[^/.]+)?$", path)
+    match: re.Match[str] | None = re.search(pattern=r"/?([^/]+?)(\.[^/.]+)?$", string=path)
     return match.group(1) if match else None
 
 
@@ -66,7 +64,7 @@ def list_folder_contents(folder_path: str) -> list:
     """
     try:
         # Perform the ls equivalent
-        folder_contents = os.listdir(folder_path)
+        folder_contents: list[str] = os.listdir(path=folder_path)
         return folder_contents
     except FileNotFoundError:
         return []

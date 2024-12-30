@@ -8,15 +8,17 @@ This script is a template for creating a Spark job using PySpark. It demonstrate
 5. Display the first three rows of the DataFrame.
 6. Stop the Spark session.
 """
+from pyspark.sql.dataframe import DataFrame
 from pyspark.sql.functions import rand
+from pyspark.sql.session import SparkSession
 
 from utils import get_spark_session
 
 app_name = "YourSparkApplicationName"
-spark_session = get_spark_session(app_name)
+spark_session: SparkSession = get_spark_session(app_name=app_name)
 
 # Create a random DataFrame
-df = spark_session.range(0, 100).withColumn("random", rand())
+df: DataFrame = spark_session.range(start=0, end=100).withColumn(colName="random", col=rand())
 # Show the DataFrame
 df.show()
 
@@ -24,7 +26,7 @@ df.show()
 df.write_dataframe(format="csv")
 
 # Load the dataframe
-processed_df = spark_session.read_dataframe(
+processed_df: DataFrame = spark_session.read_dataframe(
     "data/output/YourSparkApplicationName",
     file_extension="csv",
     header=True,

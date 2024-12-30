@@ -5,6 +5,10 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any
 
+from pyspark.sql.dataframe import DataFrame
+from pyspark.sql.readwriter import DataFrameReader
+from pyspark.sql.types import StructType
+
 from compute._logger import run_logger
 from compute.datastorage import DataStorage
 
@@ -35,8 +39,8 @@ class Input(DataStorage):
         :returns: None
         """
         super().__init__(path=path, extension=extension)
-        self.schema = schema
-        self.kwargs = kwargs
+        self.schema: StructType | None = schema
+        self.kwargs: dict[str, Any] = kwargs
 
     def dataframe(self) -> DataFrame:
         """
@@ -47,12 +51,12 @@ class Input(DataStorage):
         :return: (DataFrame), DataFrame created from the input file.
         :raises ValueError: If the file format is unsupported.
         """
-        run_logger.info(f"Loading data from: {self.path}")
+        run_logger.info(msg=f"Loading data from: {self.path}")
         # Create a DataFrame reader with optional schema
         reader = self.session.read
         if self.schema:
-            reader = reader.schema(self.schema)
-        df = self.__read_file(reader)
+            reader: DataFrameReader = reader.schema(schema=self.schema)
+        df: DataFrame = self.__read_file(reader=reader)
         if df.isEmpty():
             raise ValueError(f"File '{self.path}' is empty.")
         return df
@@ -66,11 +70,11 @@ class Input(DataStorage):
         :return: (DataFrame), DataFrame created from the input file.
         """
         if self.extension == "parquet":
-            return reader.parquet(self.path, **self.kwargs)
+            return reader.parquet(path=self.path, **self.kwargs)
         if self.extension == "csv":
-            return reader.csv(self.path, **self.kwargs)
+            return reader.csv(path=self.path, **self.kwargs)
         if self.extension == "json":
-            return reader.json(self.path, **self.kwargs)
+            return reader.json(path=self.path, **self.kwargs)
 
         # Raise error if the file format is unsupported
         raise ValueError(

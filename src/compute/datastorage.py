@@ -33,8 +33,8 @@ class DataStorage:
             raise TypeError("Argument 'extension' must be a string.")
         if extension and extension not in {"csv", "json", "parquet"}:
             raise ValueError("Argument 'extension' must be either 'csv', 'json', or 'parquet'.")
-        self._extension = extension
-        self.path = path
+        self._extension: str | None = extension
+        self.path: str = path
 
     @cached_property
     def filename(self) -> str | None:  # pragma: no cover
@@ -45,7 +45,7 @@ class DataStorage:
 
         :return: (str), File name of the input file.
         """
-        return extract_file_name(self.path)
+        return extract_file_name(path=self.path)
 
     @property
     def ls(self) -> list:  # pragma: no cover
@@ -56,7 +56,7 @@ class DataStorage:
 
         :return: (list), List of folder contents.
         """
-        return list_folder_contents(self.path)
+        return list_folder_contents(folder_path=self.path)
 
     @cached_property
     def session(self) -> SparkSession:  # pragma: no cover
@@ -78,4 +78,4 @@ class DataStorage:
 
         :return: (str), File extension of the input file.
         """
-        return self._extension if self._extension else get_file_extension(self.path)
+        return self._extension if self._extension else get_file_extension(path=self.path)
