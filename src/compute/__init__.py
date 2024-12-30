@@ -1,5 +1,6 @@
-from ._dataset import Input, Output
 from .decorators import cluster_conf, compute
+from .input import Input
+from .output import Output
 
 __all__ = [
     "Input",

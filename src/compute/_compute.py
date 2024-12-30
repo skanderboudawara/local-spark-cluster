@@ -2,8 +2,9 @@ import inspect
 import uuid
 from typing import Any, Callable, Optional
 
-from compute._dataset import Input, Output
 from compute._logger import run_logger
+from compute.input import Input
+from compute.output import Output
 from compute.session import session
 
 

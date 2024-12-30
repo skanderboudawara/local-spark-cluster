@@ -12,9 +12,10 @@ from functools import wraps
 from typing import Any, Callable
 
 from compute._compute import Compute
-from compute._dataset import Input, Output
 from compute._logger import run_logger
 from compute._utils import filter_kwargs
+from compute.input import Input
+from compute.output import Output
 from compute.session import session
 
 
