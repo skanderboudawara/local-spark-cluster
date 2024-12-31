@@ -1,13 +1,21 @@
+"""
+This module defines the Compute class used to define a compute task with inputs and outputs.
+"""
+
 import inspect
 import uuid
 from typing import Any, Callable, Optional
 
-from compute._dataset import Input, Output
 from compute._logger import run_logger
+from compute.input import Input
+from compute.output import Output
 from compute.session import session
 
 
 class Compute:
+    """
+    This class defines a compute task with inputs and outputs.
+    """
     def __init__(
         self,
         compute_func: Callable[..., Any],
@@ -25,12 +33,12 @@ class Compute:
         :returns: None
         """
         params = {} if params is None else params
-        self.compute_func = compute_func
-        self.spark = params.get("spark", session(f"master_{uuid.uuid4()!s}"))
-        self.inputs = inputs or {}
+        self.compute_func: Callable[..., Any] = compute_func
+        self.spark = params.get("spark", session(app_name=f"master_{uuid.uuid4()!s}"))
+        self.inputs: dict[str, Input] = inputs or {}
         run_logger.info("Inputs loaded via Compute class")
-        self.outputs = outputs or {}
-        run_logger.info("Outputs loaded via Compute class")
+        self.outputs: dict[str, Output] = outputs or {}
+        run_logger.info(msg="Outputs loaded via Compute class")
 
         # Extract metadata from the compute function
         self._initialize_function(compute_func)
@@ -54,11 +62,11 @@ class Compute:
 
         :returns: None
         """
-        self.__name__ = func.__name__
+        self.__name__: str = func.__name__
         self.__module__ = func.__module__
         self.__doc__ = func.__doc__
-        self._arguments = inspect.getfullargspec(func)
-        self._use_context = "spark" in self._arguments.args
+        self._arguments: inspect.FullArgSpec = inspect.getfullargspec(func=func)
+        self._use_context: bool = "spark" in self._arguments.args
 
     def __call__(self, *args: Any, **kwargs: Any) -> Any:
         """
@@ -69,12 +77,12 @@ class Compute:
 
         :returns: Any
         """
-        run_logger.info(f"{self.compute_func.__name__} is being computed")
+        run_logger.info(msg=f"{self.compute_func.__name__} is being computed")
         if self._use_context:
             kwargs["spark"] = self.spark
         kwargs.update(self.inputs)
         kwargs.update(self.outputs)
-        result = self.compute_func(*args, **kwargs)
-        run_logger.info(f"{self.compute_func.__name__} completed")
+        result: Any = self.compute_func(*args, **kwargs)
+        run_logger.info(msg=f"{self.compute_func.__name__} completed")
         self.spark.stop()
         return result

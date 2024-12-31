@@ -9,13 +9,17 @@ from __future__ import annotations
 
 import uuid
 from functools import wraps
-from typing import Any, Callable
+from typing import TYPE_CHECKING, Any, Callable
 
-from compute._compute import Compute
-from compute._dataset import Input, Output
 from compute._logger import run_logger
-from compute._utils import filter_kwargs
+from compute.toolbox import filter_kwargs
+from compute.data_compute import Compute
+from compute.input import Input
+from compute.output import Output
 from compute.session import session
+
+if TYPE_CHECKING:
+    from pyspark.sql import SparkSession
 
 
 def compute(**compute_dict: Input | Output) -> Callable[..., Any]:
@@ -27,17 +31,17 @@ def compute(**compute_dict: Input | Output) -> Callable[..., Any]:
     :returns: (Callable), Decorator function.
     """
     def wrapper(compute_func: Callable) -> Callable[..., Any]:
-        @wraps(compute_func)  # Preserve original function metadata
+        @wraps(wrapped=compute_func)  # Preserve original function metadata
         def wrapped_func(*_: Any, **f_kwargs: Any) -> Any:
-            filtered_inputs = filter_kwargs(compute_dict, Input)
-            filtered_outputs = filter_kwargs(compute_dict, Output)
+            filtered_inputs: dict[str, Input] = filter_kwargs(unflitred_dict=compute_dict, type=Input)
+            filtered_outputs: dict[str, Output] = filter_kwargs(unflitred_dict=compute_dict, type=Output)
             compute_instance = Compute(
-                compute_func,
+                compute_func=compute_func,
                 inputs=filtered_inputs,
                 outputs=filtered_outputs,
                 params=f_kwargs,
             )
-            run_logger.info(f"Spark app name is {compute_instance.app_name}")
+            run_logger.info(msg=f"Spark app name is {compute_instance.app_name}")
             return compute_instance()
         return wrapped_func
     return wrapper
@@ -59,11 +63,11 @@ def cluster_conf(app_name : str | None = None, conf: dict | None = None) -> Call
         @wraps(func)  # Preserve original function metadata
         def wrapped_func(*args: Any, **kwargs: Any) -> Any:
             # Initialize the Spark session
-            spark = session(app_name, conf)
-            spark.sparkContext.setLogLevel("WARN")
-            kwargs["spark"] = session(app_name, conf)
+            spark: SparkSession = session(app_name=app_name, conf=conf)
+            spark.sparkContext.setLogLevel(logLevel="WARN")
+            kwargs["spark"] = session(app_name=app_name, conf=conf)
             # Call the wrapped function with the Spark session
-            result = func(*args, **kwargs)
+            result: Any = func(*args, **kwargs)
             return result
         return wrapped_func
     return wrapper

@@ -18,11 +18,11 @@ def session(app_name: str, conf: Optional[dict] = None) -> SparkSession:  # prag
     """
     default_session = SparkSession.builder \
         .appName(app_name) \
-        .master(os.environ.get("SPARK_MASTER_URL", "local")) \
+        .master(os.environ.get("SPARK_MASTER_URL", default="local")) \
         .config("spark.eventLog.enabled", "false") \
         .config("spark.ui.showConsoleProgress", "false") \
         .config("spark.eventLog.dir", "file:///opt/spark/work-dir/spark-events") \
         .config("spark.default.output.path", "/opt/bitnami/spark") \
         .config("spark.default.input.path", "/opt/bitnami/spark")
-    session = default_session.config(map=conf) if conf else default_session
+    session: SparkSession = default_session.config(map=conf) if conf else default_session
     return session.getOrCreate()

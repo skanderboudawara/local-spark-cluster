@@ -5,7 +5,7 @@ Functions:
     fake_dataframe(spark: SparkSession) -> DataFrame:
         Creates a fake DataFrame with predefined schema and data.
 
-    do_exercice(df: DataFrame) -> DataFrame:
+    do_exercise(df: DataFrame) -> DataFrame:
         Performs window operations on the given DataFrame, including:
         1. Calculating the rate change (difference between current and previous quarters' revenue).
         2. Calculating the cumulative average within each year.
@@ -16,14 +16,14 @@ Usage:
     2. Generate a fake DataFrame using `fake_dataframe`.
     3. Write the fake DataFrame to a CSV file.
     4. Read the DataFrame from the CSV file.
-    5. Apply the `do_exercice` function to perform window operations.
+    5. Apply the `do_exercise` function to perform window operations.
     6. Display the resulting DataFrame.
     7. Write the resulting DataFrame to a Parquet file
 """
 from pyspark.sql import DataFrame, SparkSession
 from pyspark.sql.functions import avg, col, lag
 from pyspark.sql.types import FloatType, IntegerType, StructField, StructType
-from pyspark.sql.window import Window
+from pyspark.sql.window import Window, WindowSpec
 
 from utils import get_spark_session
 
@@ -38,14 +38,14 @@ def fake_dataframe(spark: SparkSession) -> DataFrame:
         and 'revenue_rate'.
     """
     # Define schema
-    schema = StructType([
-        StructField("year", IntegerType(), True),
-        StructField("quarter", IntegerType(), True),
-        StructField("revenue_rate", FloatType(), True),
+    schema = StructType(fields=[
+        StructField(name="year", dataType=IntegerType(), nullable=True),
+        StructField(name="quarter", dataType=IntegerType(), nullable=True),
+        StructField(name="revenue_rate", dataType=FloatType(), nullable=True),
     ])
 
     # Create data
-    data = [
+    data: list[tuple[int, int, float]] = [
         (2020, 1, 100.0),
         (2020, 2, 150.0),
         (2020, 3, 200.0),
@@ -57,12 +57,12 @@ def fake_dataframe(spark: SparkSession) -> DataFrame:
     ]
 
     # Create DataFrame
-    df = spark.createDataFrame(data, schema)
+    df: DataFrame = spark.createDataFrame(data=data, schema=schema)
 
     return df
 
 
-def do_exercice(df: DataFrame) -> DataFrame:
+def do_exercise(df: DataFrame) -> DataFrame:
     """
     Performs window operations on the given DataFrame, including:
 
@@ -78,33 +78,35 @@ def do_exercice(df: DataFrame) -> DataFrame:
     """
     # Define a window specification
     # The window is partitioned by year and ordered by quarter
-    w = Window.partitionBy("year").orderBy("quarter")
+    w: WindowSpec = Window.partitionBy("year").orderBy("quarter")
 
     # 1. Calculate the rate change (difference between current and previous quarters revenue)
     df = df.withColumn(
-        "rate_change",
-        col("revenue_rate") - lag("revenue_rate", 1).over(w),
+        colName="rate_change",
+        col=col(col="revenue_rate") - lag(col="revenue_rate", offset=1).over(window=w),
     )
 
     # 2. Calculate the cumulative average within each year
     df = df.withColumn(
-        "cumulative_avg",
-        avg("revenue_rate").over(w.rowsBetween(Window.unboundedPreceding, Window.currentRow)),
+        colName="cumulative_avg",
+        col=avg(col="revenue_rate").over(
+            window=w.rowsBetween(start=Window.unboundedPreceding, end=Window.currentRow)
+        ),
     )
 
     # 3. Calculate the moving average over the last two quarters (current and previous quarter)
     df = df.withColumn(
-        "moving_avg",
-        avg("revenue_rate").over(w.rowsBetween(-1, 0)),
+        colName="moving_avg",
+        col=avg(col="revenue_rate").over(window=w.rowsBetween(start=-1, end=0)),
     )
 
     return df
 
 
 # Create Spark session
-spark_session = get_spark_session("PysparkWindow")
+spark_session: SparkSession = get_spark_session(app_name="PysparkWindow")
 
-fake_dataframe(spark_session).write_dataframe(format="csv", custom_name="fake_data")
+fake_dataframe(spark=spark_session).write_dataframe(format="csv", custom_name="fake_data")
 # Get inputs
 df: DataFrame = spark_session.read_dataframe(
     "data/output/PysparkWindow/fake_data",
@@ -114,7 +116,7 @@ df: DataFrame = spark_session.read_dataframe(
 )
 
 # Apply exercice
-df = do_exercice(df)
+df = do_exercise(df)
 
 # Display result
 df.show()

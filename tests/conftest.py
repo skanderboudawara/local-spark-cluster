@@ -6,7 +6,7 @@ import uuid
 import os
 
 @pytest.fixture
-def spark_session() -> Generator[SparkSession, None, None]:
+def spark_session(scope="session") -> Generator[SparkSession, None, None]:
     """
     This method creates and returns a new spark session configured to run locally in docker
 
@@ -14,7 +14,8 @@ def spark_session() -> Generator[SparkSession, None, None]:
 
     returns: (Generator[SparkSession, None, None]), new spark session
     """
-    spark = SparkSession.builder \
+    try:
+        spark = SparkSession.builder \
         .appName("test") \
         .master(os.environ.get("SPARK_MASTER_URL", "local")) \
         .config("spark.ui.showConsoleProgress", "false") \
@@ -23,5 +24,11 @@ def spark_session() -> Generator[SparkSession, None, None]:
         .config("spark.executor.cores", "1") \
         .config("spark.executor.memory", "1g") \
         .getOrCreate()
-    yield spark
-    spark.stop()
+        yield spark
+    except:
+        spark = SparkSession.builder.getOrCreate()
+        yield spark
+    try:
+        spark.stop()
+    except:
+        print("ok")
