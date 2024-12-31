@@ -8,16 +8,16 @@ if TYPE_CHECKING:
     from pyspark.sql import DataFrame
 
 
-def filter_kwargs(kwargs: dict, type: Any) -> dict:
+def filter_kwargs(unflitred_dict: dict, type: Any) -> dict:
     """
-    This function filters the kwargs dictionary by the types of the values.
+    This function filters the unflitred_dict dictionary by the types of the values.
 
-    :param kwargs: (dict) The dictionary to filter.
+    :param unflitred_dict: (dict) The dictionary to filter.
     :param type: (type) The type to filter by.
 
     :return: (dict) The filtered dictionary.
     """
-    return {k: v for k, v in kwargs.items() if isinstance(v, type)}
+    return {k: v for k, v in unflitred_dict.items() if isinstance(v, type)}
 
 
 def get_file_extension(path: str) -> str | None:
@@ -43,16 +43,20 @@ def sanitize_columns(df: DataFrame) -> DataFrame:
     return df
 
 
-def extract_file_name(path: str) -> str | None:
+def get_filename(full_path: str) -> str | None:
     """
-    This function extracts the file name from the provided path.
+    This function extracts the file name from the provided full_path.
 
-    :param path: (str), File path.
+    :param full_path: (str), File full_path.
 
     :return: (str), File name.
     """
-    match: re.Match[str] | None = re.search(pattern=r"/?([^/]+?)(\.[^/.]+)?$", string=path)
-    return match.group(1) if match else None
+    if not full_path or not isinstance(full_path, str):
+        return None
+
+    base_name: str = os.path.basename(p=full_path)
+    name, _ = os.path.splitext(p=base_name)
+    return name if name else None
 
 
 def list_folder_contents(folder_path: str) -> list:
@@ -62,11 +66,5 @@ def list_folder_contents(folder_path: str) -> list:
     :param folder_path: Path to the folder.
     :return: List of folder contents.
     """
-    try:
-        # Perform the ls equivalent
-        folder_contents: list[str] = os.listdir(path=folder_path)
-        return folder_contents
-    except FileNotFoundError:
-        return []
-    except PermissionError:
-        return []
+    folder_contents: list[str] = list(os.listdir(path=folder_path))
+    return folder_contents

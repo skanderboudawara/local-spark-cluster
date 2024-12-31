@@ -6,7 +6,7 @@ from __future__ import annotations
 from pyspark.sql import DataFrame, DataFrameWriter
 
 from compute._logger import run_logger
-from compute._utils import (
+from compute.toolbox import (
     sanitize_columns,
 )
 from compute.datastorage import DataStorage

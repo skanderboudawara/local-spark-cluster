@@ -12,7 +12,7 @@ from functools import wraps
 from typing import TYPE_CHECKING, Any, Callable
 
 from compute._logger import run_logger
-from compute._utils import filter_kwargs
+from compute.toolbox import filter_kwargs
 from compute.data_compute import Compute
 from compute.input import Input
 from compute.output import Output

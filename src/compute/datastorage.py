@@ -7,8 +7,8 @@ from functools import cached_property
 
 from pyspark.sql import SparkSession
 
-from compute._utils import (
-    extract_file_name,
+from compute.toolbox import (
+    get_filename,
     get_file_extension,
     list_folder_contents,
 )
@@ -45,7 +45,7 @@ class DataStorage:
 
         :return: (str), File name of the input file.
         """
-        return extract_file_name(path=self.path)
+        return get_filename(path=self.path)
 
     @property
     def ls(self) -> list:  # pragma: no cover
