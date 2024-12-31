@@ -90,7 +90,7 @@ def do_exercise(df: DataFrame) -> DataFrame:
     df = df.withColumn(
         colName="cumulative_avg",
         col=avg(col="revenue_rate").over(
-            window=w.rowsBetween(start=Window.unboundedPreceding, end=Window.currentRow)
+            window=w.rowsBetween(start=Window.unboundedPreceding, end=Window.currentRow),
         ),
     )
 

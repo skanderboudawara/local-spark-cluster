@@ -6,10 +6,10 @@ from __future__ import annotations
 from pyspark.sql import DataFrame, DataFrameWriter
 
 from compute._logger import run_logger
+from compute.datastorage import DataStorage
 from compute.toolbox import (
     sanitize_columns,
 )
-from compute.datastorage import DataStorage
 
 
 class Output(DataStorage):

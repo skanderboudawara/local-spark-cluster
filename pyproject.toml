@@ -11,6 +11,7 @@ omit = [
 
 [tool.pytest.ini_options]
 addopts = [
+    "--doctest-modules",
     "-vv",
     "-p",
     "no:warnings",
@@ -106,7 +107,7 @@ lint.ignore = [
 ]
 exclude = [
     "*setup.py",
-    ".*validator.py",
+    "*validator*",
     "*tests*",
 ]
 output-format = "grouped"

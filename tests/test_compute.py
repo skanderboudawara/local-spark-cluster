@@ -24,6 +24,7 @@ def test_compute_initialization(spark_session: SparkSession) -> None:
     assert compute.outputs == outputs
     assert compute.spark == spark_session
     assert compute.app_name.startswith("test")
+    compute.spark.stop()
 
 
 def test_compute_call(spark_session: SparkSession) -> None:

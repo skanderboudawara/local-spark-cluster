@@ -52,9 +52,9 @@ class Input(DataStorage):
         """
         run_logger.info(msg=f"Loading data from: {self.path}")
         # Create a DataFrame reader with optional schema
-        reader = self.session.read
-        if self.schema:
-            reader: DataFrameReader = reader.schema(schema=self.schema)
+        reader: DataFrameReader = (
+            self.session.read.schema(schema=self.schema) if self.schema else self.session.read
+        )
         df: DataFrame = self.__read_file(reader=reader)
         if df.isEmpty():
             raise ValueError(f"File '{self.path}' is empty.")
