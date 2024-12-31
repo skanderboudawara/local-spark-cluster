@@ -1,7 +1,6 @@
 """
 This transformation script reads a CSV file, selects a column, writes the result to a new CSV file
 """
-
 from typing import TYPE_CHECKING
 
 from compute import Input, Output, cluster_conf, compute

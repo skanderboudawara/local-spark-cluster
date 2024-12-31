@@ -26,7 +26,6 @@ def test_compute_initialization(spark_session: SparkSession) -> None:
     assert compute.app_name.startswith("test")
     compute.spark.stop()
 
-
 def test_compute_call(spark_session: SparkSession) -> None:
     inputs: dict[str, Input] = {"input1": Input(path="1"), "input2": Input(path="2")}
     outputs: dict[str, Output] = {"output1": Output(path="3")}

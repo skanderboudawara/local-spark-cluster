@@ -15,5 +15,3 @@ def test_list_folder_contents(monkeypatch):
     assert list_folder_contents("existing_folder") == ["file1.txt", "file2.txt", "subfolder"]
     with pytest.raises(FileNotFoundError):
         list_folder_contents("non_existing_folder")
-
-
