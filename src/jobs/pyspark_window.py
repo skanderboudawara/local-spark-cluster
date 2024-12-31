@@ -103,25 +103,26 @@ def do_exercise(df: DataFrame) -> DataFrame:
     return df
 
 
-# Create Spark session
-spark_session: SparkSession = get_spark_session(app_name="PysparkWindow")
+if __name__ == "__main__":
+    # Create Spark session
+    spark_session: SparkSession = get_spark_session(app_name="PysparkWindow")
 
-fake_dataframe(spark=spark_session).write_dataframe(format="csv", custom_name="fake_data")
-# Get inputs
-df: DataFrame = spark_session.read_dataframe(
-    "data/output/PysparkWindow/fake_data",
-    file_extension="csv",
-    header=True,
-    inferSchema=True,
-)
+    fake_dataframe(spark=spark_session).write_dataframe(format="csv", custom_name="fake_data")
+    # Get inputs
+    df: DataFrame = spark_session.read_dataframe(
+        "data/output/PysparkWindow/fake_data",
+        file_extension="csv",
+        header=True,
+        inferSchema=True,
+    )
 
-# Apply exercice
-df = do_exercise(df)
+    # Apply exercice
+    df = do_exercise(df)
 
-# Display result
-df.show()
+    # Display result
+    df.show()
 
-# Store output
-df.write_dataframe(format="parquet", custom_name="output")
+    # Store output
+    df.write_dataframe(format="parquet", custom_name="output")
 
-spark_session.stop()
+    spark_session.stop()

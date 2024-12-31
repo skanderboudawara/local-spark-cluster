@@ -14,27 +14,28 @@ from pyspark.sql.session import SparkSession
 
 from utils import get_spark_session
 
-app_name = "YourSparkApplicationName"
-spark_session: SparkSession = get_spark_session(app_name=app_name)
+if __name__ == "__main__":
+    app_name = "YourSparkApplicationName"
+    spark_session: SparkSession = get_spark_session(app_name=app_name)
 
-# Create a random DataFrame
-df: DataFrame = spark_session.range(start=0, end=100).withColumn(colName="random", col=rand())
-# Show the DataFrame
-df.show()
+    # Create a random DataFrame
+    df: DataFrame = spark_session.range(start=0, end=100).withColumn(colName="random", col=rand())
+    # Show the DataFrame
+    df.show()
 
-# Save the DataFrame to a CSV file
-df.write_dataframe(format="csv")
+    # Save the DataFrame to a CSV file
+    df.write_dataframe(format="csv")
 
-# Load the dataframe
-processed_df: DataFrame = spark_session.read_dataframe(
-    "data/output/YourSparkApplicationName",
-    file_extension="csv",
-    header=True,
-    inferSchema=True,
-)
+    # Load the dataframe
+    processed_df: DataFrame = spark_session.read_dataframe(
+        "data/output/YourSparkApplicationName",
+        file_extension="csv",
+        header=True,
+        inferSchema=True,
+    )
 
-# Show the first three rows of the DataFrame
-processed_df.limit(3).show()
+    # Show the first three rows of the DataFrame
+    processed_df.limit(3).show()
 
-# Stop the Spark session
-spark_session.stop()
+    # Stop the Spark session
+    spark_session.stop()
