@@ -24,5 +24,5 @@ def session(app_name: str, conf: Optional[dict] = None) -> SparkSession:  # prag
         .config("spark.eventLog.dir", "file:///opt/spark/work-dir/spark-events") \
         .config("spark.default.output.path", "/opt/bitnami/spark") \
         .config("spark.default.input.path", "/opt/bitnami/spark")
-    session: SparkSession = default_session.config(map=conf) if conf else default_session
-    return session.getOrCreate()
+    session: SparkSession = default_session.config(map=conf) if conf else default_session  # type: ignore
+    return session.getOrCreate()  # type: ignore[attr-defined]

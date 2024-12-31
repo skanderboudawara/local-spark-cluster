@@ -1,3 +1,5 @@
+[![ci](https://github.com/skanderboudawara/local_spark_cluster/actions/workflows/ci.yml/badge.svg)](https://github.com/skanderboudawara/local_spark_cluster/actions/workflows/ci.yml)
+
 # Local Spark Cluster Repository
 
 ## Purpose
@@ -14,8 +16,8 @@ local-spark-cluster/
  ├── docker-compose.yml   # Docker Compose configuration
  ├── src/                 # Source code for Python scripts
  │ ├── init.py 
- │ ├── spark_session.py   # Script to initialize Spark session
- │ └── scripts/           # Directory for user scripts 
+ │ ├── utils.py           # Script to initialize Spark session
+ │ └── jobs/             # Directory for user jobs 
  │  ├── init.py 
  │  ├── script1.py        # Example Python script 1 
  │  └── script2.py        # Example Python script 2 
@@ -65,9 +67,9 @@ You can start the Docker containers using either the Docker Compose command or t
 
 ##### 2. Using docker compose:
 
-   ```bash
-   docker compose up -d
-   ```
+```bash
+docker compose up -d
+```
 
 #### 3. **Check the status of your containers:**
 

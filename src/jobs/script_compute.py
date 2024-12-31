@@ -1,9 +1,12 @@
 """
 This transformation script reads a CSV file, selects a column, writes the result to a new CSV file
 """
-from pyspark.sql import DataFrame
+from typing import TYPE_CHECKING
 
 from compute import Input, Output, cluster_conf, compute
+
+if TYPE_CHECKING:
+    from pyspark.sql import DataFrame
 
 
 @cluster_conf(app_name="select_col")

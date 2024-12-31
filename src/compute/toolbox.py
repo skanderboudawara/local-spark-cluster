@@ -1,23 +1,36 @@
+"""
+This module provides utility functions for file handling and DataFrame manipulation.
+"""
 from __future__ import annotations
 
 import os
 import re
 from typing import TYPE_CHECKING, Any
 
-if TYPE_CHECKING:
+if TYPE_CHECKING:  # pragma: no cover
     from pyspark.sql import DataFrame
 
 
-def filter_kwargs(unflitred_dict: dict, type: Any) -> dict:
+def filter_kwargs(kwargs: dict, type: Any) -> dict:
     """
-    This function filters the unflitred_dict dictionary by the types of the values.
+    This function filters the kwargs dictionary by the types of the values.
 
-    :param unflitred_dict: (dict) The dictionary to filter.
+    :param kwargs: (dict) The dictionary to filter.
     :param type: (type) The type to filter by.
 
     :return: (dict) The filtered dictionary.
+
+    Examples:
+    >>> filter_kwargs({'a': 1, 'b': 'string', 'c': 3.0, 'd': [1, 2, 3]}, int)
+    {'a': 1}
+
+    >>> filter_kwargs({'a': 1, 'b': 'string', 'c': 3.0, 'd': [1, 2, 3]}, float)
+    {'c': 3.0}
+
+    >>> filter_kwargs({'a': 1, 'b': 'string', 'c': 3.0, 'd': [1, 2, 3]}, list)
+    {'d': [1, 2, 3]}
     """
-    return {k: v for k, v in unflitred_dict.items() if isinstance(v, type)}
+    return {k: v for k, v in kwargs.items() if isinstance(v, type)}
 
 
 def get_file_extension(path: str) -> str | None:
@@ -27,8 +40,26 @@ def get_file_extension(path: str) -> str | None:
     :param: None
 
     :return: (str), File extension of the input file.
+
+    Examples:
+    >>> get_file_extension("/path/file.exe")
+    'exe'
+
+    >>> get_file_extension("/path/file.tar.gz")
+    'gz'
+
+    >>> get_file_extension("/path/file") is None
+    True
+
+    >>> get_file_extension(None) is None
+    True
     """
-    return path.split(sep=".")[-1].lower()
+    if not path or not isinstance(path, str):
+        return None
+
+    base_name: str = os.path.basename(p=path)
+    _, extension = os.path.splitext(p=base_name)
+    return extension.lstrip(".") if extension else None
 
 
 def sanitize_columns(df: DataFrame) -> DataFrame:
@@ -38,6 +69,18 @@ def sanitize_columns(df: DataFrame) -> DataFrame:
     :param df: (DataFrame), DataFrame to sanitize.
 
     :return: (DataFrame), v DataFrame.
+
+    >>> from pyspark.sql import SparkSession
+    >>> spark = SparkSession.builder.getOrCreate()
+    >>> sanitized_df = sanitize_columns(
+    ...     spark.createDataFrame(
+    ...             data=[("value1", "value2")],
+    ...             schema=["col 1", "col-2"]
+    ...     ))
+    >>> sanitized_df_cols = sanitized_df.columns
+    >>> spark.stop()
+    >>> print(sanitized_df_cols)
+    ['col_1', 'col_2']
     """
     df = df.toDF(*[re.sub(pattern=r"[^a-zA-Z0-9_]+", repl="_", string=c) for c in df.columns])
     return df
@@ -50,6 +93,22 @@ def get_filename(full_path: str) -> str | None:
     :param full_path: (str), File full_path.
 
     :return: (str), File name.
+
+    Examples:
+    >>> get_filename("/path/to/file.exe")
+    'file'
+
+    >>> get_filename("/path/to/file.tar.gz")
+    'file.tar'
+
+    >>> get_filename("/path/to/file.tar.gz")
+    'file.tar'
+
+    >>> get_filename(2) is None
+    True
+
+    >>> get_filename(None) is None
+    True
     """
     if not full_path or not isinstance(full_path, str):
         return None
@@ -63,7 +122,8 @@ def list_folder_contents(folder_path: str) -> list:
     """
     Lists all files and directories in the specified folder.
 
-    :param folder_path: Path to the folder.
+    :param folder_path: Path to the folder
+
     :return: List of folder contents.
     """
     folder_contents: list[str] = list(os.listdir(path=folder_path))
