@@ -19,8 +19,9 @@ services:
       timeout: 3s
       retries: 3
     ports:
-      - '8080:8080'
-      - '7077:7077'
+      - '60:8080'
+      - '777:7077'
+      - '4041:4040'
       - "18080:18080"  # Spark History Server Web UI
     volumes:
       - ./src:/src

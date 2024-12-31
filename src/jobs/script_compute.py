@@ -8,10 +8,10 @@ from compute import Input, Output, cluster_conf, compute
 
 @cluster_conf(app_name="select_col")
 @compute(
-    random=Input("data/input/random_data.csv", header=True, inferSchema=True),
-    output=Output("data/output/selected_col2.csv"),
+    random_data=Input(path="data/input/random_data.csv", header=True, inferSchema=True),
+    output=Output(path="data/output/selected_col2.csv"),
 )
-def compute_random(random: DataFrame, output: Output) -> None:
+def compute_random(random_data: Input, output: Output) -> None:
     """
     This function reads a CSV file, selects a column, and writes the result to a new CSV file.
 
@@ -20,11 +20,11 @@ def compute_random(random: DataFrame, output: Output) -> None:
 
     :return: None
     """
-    random = random.dataframe()
+    random_data_imported: DataFrame = random_data.dataframe()
 
-    random.show()
+    random_data_imported.show()
 
-    output.write(random)
+    output.write(df=random_data_imported)
 
 
 if __name__ == "__main__":

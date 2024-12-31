@@ -5,8 +5,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any
 
-from pyspark.sql.dataframe import DataFrame
-from pyspark.sql.readwriter import DataFrameReader
+from pyspark.sql import DataFrame, DataFrameReader
 from pyspark.sql.types import StructType
 
 from compute._logger import run_logger
