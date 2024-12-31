@@ -123,7 +123,7 @@ def list_folder_contents(folder_path: str) -> list:
     Lists all files and directories in the specified folder.
 
     :param folder_path: Path to the folder
-    
+
     :return: List of folder contents.
     """
     folder_contents: list[str] = list(os.listdir(path=folder_path))
