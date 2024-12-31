@@ -33,8 +33,8 @@ def compute(**compute_dict: Input | Output) -> Callable[..., Any]:
     def wrapper(compute_func: Callable) -> Callable[..., Any]:
         @wraps(wrapped=compute_func)  # Preserve original function metadata
         def wrapped_func(*_: Any, **f_kwargs: Any) -> Any:
-            filtered_inputs: dict[str, Input] = filter_kwargs(kwargs=compute_dict, type=Input)
-            filtered_outputs: dict[str, Output] = filter_kwargs(kwargs=compute_dict, type=Output)
+            filtered_inputs: dict[str, Input] = filter_kwargs(unflitred_dict=compute_dict, type=Input)
+            filtered_outputs: dict[str, Output] = filter_kwargs(unflitred_dict=compute_dict, type=Output)
             compute_instance = Compute(
                 compute_func=compute_func,
                 inputs=filtered_inputs,
