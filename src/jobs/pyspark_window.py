@@ -117,7 +117,7 @@ if __name__ == "__main__":  # pragma: no cover
     df: DataFrame = spark_session.read.csv(
         "data/output/PysparkWindow/fake_data",
         header=True,
-        inferSchema=True
+        inferSchema=True,
     )
 
     # Apply exercise
