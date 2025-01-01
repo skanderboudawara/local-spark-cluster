@@ -17,7 +17,7 @@ addopts = [
     "no:warnings",
     "--cov=src",
     "--cov-report=term-missing",
-    "--cov-fail-under=50"
+    "--cov-fail-under=100"
 ]
 pythonpath = [
     "src"

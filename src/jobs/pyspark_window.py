@@ -12,7 +12,7 @@ Functions:
         3. Calculating the moving average over the last two quarters (current and previous quarter).
 
 Usage:
-    1. Create a Spark session using `get_spark_session`.
+    1. Create a Spark session using `session`.
     2. Generate a fake DataFrame using `fake_dataframe`.
     3. Write the fake DataFrame to a CSV file.
     4. Read the DataFrame from the CSV file.
@@ -25,10 +25,10 @@ from pyspark.sql.functions import avg, col, lag
 from pyspark.sql.types import FloatType, IntegerType, StructField, StructType
 from pyspark.sql.window import Window, WindowSpec
 
-from utils import get_spark_session
+from compute import session
 
 
-def fake_dataframe(spark: SparkSession) -> DataFrame:
+def fake_dataframe(spark: SparkSession) -> DataFrame:  # pragma: no cover
     """
     This method is used to create a fake DataFrame with sample data.
 
@@ -62,7 +62,7 @@ def fake_dataframe(spark: SparkSession) -> DataFrame:
     return df
 
 
-def do_exercise(df: DataFrame) -> DataFrame:
+def do_exercise(df: DataFrame) -> DataFrame:  # pragma: no cover
     """
     Performs window operations on the given DataFrame, including:
 
@@ -103,26 +103,31 @@ def do_exercise(df: DataFrame) -> DataFrame:
     return df
 
 
-if __name__ == "__main__":
+if __name__ == "__main__":  # pragma: no cover
     # Create Spark session
-    spark_session: SparkSession = get_spark_session(app_name="PysparkWindow")
+    spark_session: SparkSession = session(app_name="PysparkWindow")
 
-    fake_dataframe(spark=spark_session).write_dataframe(format="csv", custom_name="fake_data")
-    # Get inputs
-    df: DataFrame = spark_session.read_dataframe(
+    fake_dataframe: DataFrame = fake_dataframe(spark=spark_session)
+
+    fake_dataframe.write.mode("overwrite") \
+        .format("csv") \
+        .option(key="header", value="true") \
+        .save("data/output/PysparkWindow/fake_data")
+
+    df: DataFrame = spark_session.read.csv(
         "data/output/PysparkWindow/fake_data",
-        file_extension="csv",
         header=True,
-        inferSchema=True,
+        inferSchema=True
     )
 
-    # Apply exercice
+    # Apply exercise
     df = do_exercise(df)
 
     # Display result
     df.show()
 
-    # Store output
-    df.write_dataframe(format="parquet", custom_name="output")
+    df.write.mode("overwrite") \
+        .format("parquet") \
+        .save("data/output/PysparkWindow/final")
 
     spark_session.stop()

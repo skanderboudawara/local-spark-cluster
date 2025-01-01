@@ -18,14 +18,11 @@ from compute.output import Output
 from compute.session import session
 from compute.toolbox import filter_kwargs
 
-if TYPE_CHECKING:
-    from pyspark.sql import SparkSession
-
-if TYPE_CHECKING:
+if TYPE_CHECKING:  # pragma: no cover
     from pyspark.sql import SparkSession
 
 
-def compute(**compute_dict: Input | Output) -> Callable[..., Any]:
+def compute(**compute_dict: Input | Output) -> Callable[..., Any]:  # pragma: no cover
     """
     This decorator is used to define a compute task with inputs and outputs.
 
@@ -50,7 +47,10 @@ def compute(**compute_dict: Input | Output) -> Callable[..., Any]:
     return wrapper
 
 
-def cluster_conf(app_name : str | None = None, conf: dict | None = None) -> Callable[..., Any]:
+def cluster_conf(
+    app_name: str | None = None,
+    conf: dict | None = None,
+) -> Callable[..., Any]:  # pragma: no cover
     """
     This decorator is used to configure the Spark session and provide it to the wrapped function.
 

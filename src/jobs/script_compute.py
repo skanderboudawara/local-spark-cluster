@@ -5,7 +5,7 @@ from typing import TYPE_CHECKING
 
 from compute import Input, Output, cluster_conf, compute
 
-if TYPE_CHECKING:
+if TYPE_CHECKING:  # pragma: no cover
     from pyspark.sql import DataFrame
 
 
@@ -14,7 +14,7 @@ if TYPE_CHECKING:
     random_data=Input(path="data/input/random_data.csv", header=True, inferSchema=True),
     output=Output(path="data/output/selected_col2.csv"),
 )
-def compute_random(random_data: Input, output: Output) -> None:
+def compute_random(random_data: Input, output: Output) -> None:  # pragma: no cover
     """
     This function reads a CSV file, selects a column, and writes the result to a new CSV file.
 
@@ -30,5 +30,5 @@ def compute_random(random_data: Input, output: Output) -> None:
     output.write(df=random_data_imported)
 
 
-if __name__ == "__main__":
+if __name__ == "__main__":  # pragma: no cover
     compute_random()
