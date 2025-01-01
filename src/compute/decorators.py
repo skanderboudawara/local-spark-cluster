@@ -71,6 +71,7 @@ def cluster_conf(app_name : str | None = None, conf: dict | None = None) -> Call
             kwargs["spark"] = session(app_name=app_name, conf=conf)
             # Call the wrapped function with the Spark session
             result: Any = func(*args, **kwargs)
+            spark.stop()
             return result
         return wrapped_func
     return wrapper
