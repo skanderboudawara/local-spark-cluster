@@ -12,11 +12,11 @@ from pyspark.sql.dataframe import DataFrame
 from pyspark.sql.functions import rand
 from pyspark.sql.session import SparkSession
 
-from utils import get_spark_session
+from compute import session
 
-if __name__ == "__main__":
+if __name__ == "__main__":  # pragma: no cover
     app_name = "YourSparkApplicationName"
-    spark_session: SparkSession = get_spark_session(app_name=app_name)
+    spark_session: SparkSession = session(app_name=app_name)
 
     # Create a random DataFrame
     df: DataFrame = spark_session.range(start=0, end=100).withColumn(colName="random", col=rand())
@@ -24,14 +24,14 @@ if __name__ == "__main__":
     df.show()
 
     # Save the DataFrame to a CSV file
-    df.write_dataframe(format="csv")
+    df.write.mode("overwrite") \
+        .format("csv") \
+        .option(key="header", value="true") \
+        .save("data/output/YourSparkApplicationName")
 
     # Load the dataframe
-    processed_df: DataFrame = spark_session.read_dataframe(
-        "data/output/YourSparkApplicationName",
-        file_extension="csv",
-        header=True,
-        inferSchema=True,
+    processed_df: DataFrame = spark_session.read.csv(
+        "data/output/YourSparkApplicationName", header=True, inferSchema=True
     )
 
     # Show the first three rows of the DataFrame

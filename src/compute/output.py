@@ -70,15 +70,15 @@ class Output(DataStorage):
         :returns: None
         """
         if not isinstance(df, DataFrame):
-            raise ValueError("Argument 'df' must be a DataFrame.")
+            raise TypeError("Argument 'df' must be a DataFrame.")
         if not isinstance(mode, str):
-            raise ValueError("Argument 'mode' must be a string.")
+            raise TypeError("Argument 'mode' must be a string.")
         if mode not in {"append", "overwrite"}:
             raise ValueError("Argument 'mode' must be either 'append' or 'overwrite'.")
         if not isinstance(partitionBy, (int, str, list, type(None))):
-            raise ValueError("Argument 'partitionBy' must be an integer, string, list, or None.")
+            raise TypeError("Argument 'partitionBy' must be an integer, string, list, or None.")
         df = sanitize_columns(df=df)
-        if partitionBy:
+        if partitionBy is not None:
             partitionBy = partitionBy if isinstance(partitionBy, list) else [partitionBy]  # noqa: N806
             df = df.repartition(*partitionBy)
         writer: DataFrameWriter = df.write.mode(saveMode="overwrite")
@@ -95,6 +95,7 @@ class Output(DataStorage):
         :returns: None
         """
         run_logger.info(msg=f"dumping data to: {self.path}")
+        self.path = self.path.rstrip(f".{self.extension}")
         # Validate the format and write accordingly
         if self.extension == "parquet":
             writer.format(source=self.extension).save(path=self.path)
@@ -104,12 +105,9 @@ class Output(DataStorage):
                 writer
                 .format(source=self.extension)
                 .option(key="header", value="true")
-                .save(path=self.path[:-4])
+                .save(path=self.path)
             )
             return
         if self.extension == "json":
             writer.format(source=self.extension).save(path=self.path)
             return
-        raise ValueError(
-            f"Unsupported format: '{self.extension}'. Please choose 'csv', 'json', or 'parquet'.",
-        )
